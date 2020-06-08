@@ -1,37 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content%}
-<div class="columns is-centered">
-	<div class="column is-one-third">
-		<div class="section">
-			<h3 class="title is-3">Login</h3>
+			<h3>Login</h3>
 			<form method="post">
 			  {% csrf_token %}
 				{% if form.non_field_errors %}
-					<div class="notification has-background-warning">
+					<div class="warning">
 						<ul>
 	    					{{ form.non_field_errors.as_ul }}
 						</ul>
 					</div>
 				{% endif %}
-				<div class="field">
-				  <label class="label">Username</label>
-				  	<div class="control">
-				    	<input class="input is-small" type="text" name="username" autocomplete="username" maxlength="150" required="" id="id_username">
-					</div>
-				</div>
-				<div class="field">
-				  <label class="label">Password</label>
-				  <div class="control">
-				    <input class="input is-small" type="password" name="password" autocomplete="current-password" required="" id="id_password">
-				</div>
-				</div>
-				<div class="field">
-					  <button type="submit" class="button is-link">Login</button>
-				</div>
+				<label for="id_username">Username</label>
+				<input type="text" name="username" autocomplete="username" maxlength="150" required="" id="id_username">
+				<label for="id_password">Password</label>
+				<input type="password" name="password" autocomplete="current-password" required="" id="id_password">
+				<button type="submit" class="button">Login</button>
 			</form>
   			<p><a href="{% url 'password_reset' %}">Reset password</a></p>
-		</div>
-	</div>
-</div>
 {% endblock %}

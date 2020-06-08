@@ -25,7 +25,7 @@ SECRET_KEY = 'j1j0=+e-$ih=u+-2fn64d(u3_$)67dkushefmx^c3dwu3m!%lw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =['localhost', '0.0.0.0']
 
 
 # Application definition
@@ -127,14 +127,18 @@ STATICFILES_DIRS = (
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+# for offline mailing
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'sent_emails'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-MAILER_EMAIL_BACKEND = EMAIL_BACKEND
-EMAIL_HOST = 'smtpout.secureserver.net'
-EMAIL_HOST_PASSWORD = 'Togobi720'
-EMAIL_HOST_USER = 'geraldsolon@togobi.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# for existing smtp server
+# TODO: need change EMAIL_HOST_USER
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+# EMAIL_HOST = 'smtpout.secureserver.net'
+# EMAIL_HOST_PASSWORD = 'Togobi720'
+# EMAIL_HOST_USER = 'geraldsolon@togobi.com'
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

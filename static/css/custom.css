@@ -1,0 +1,10 @@
+@charset "UTF-8";
+body, .top-bar, .top-bar ul {
+    background-color: #FFFFFF;
+}
+
+.top-bar {
+	-moz-box-shadow: 0 1px #E9EBEC;
+	-webkit-box-shadow: 0 1px #E9EBEC;
+	box-shadow: 0 1px #E9EBEC;
+}

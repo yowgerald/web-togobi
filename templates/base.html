@@ -1,71 +1,39 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Eventr:phl | {% block title %}{% endblock %}</title>
+    <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
-    <link rel="stylesheet" href="{% static 'bulma.css' %}">
-    <script defer src="{% static 'fontawsome-all.js' %}"></script>
-  </head>
+	<link rel="stylesheet" href="{% static 'foundation.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
   <body>
-	<nav class="navbar" role="navigation" aria-label="main navigation">
-	  <div class="navbar-brand">
-	    <a class="navbar-item" href="#">
-	      <img src="{% static 'eventr-logo.png' %}" width="112" height="28">
-	    </a>
-
-	    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-	      <span aria-hidden="true"></span>
-	      <span aria-hidden="true"></span>
-	      <span aria-hidden="true"></span>
-	    </a>
-	  </div>
-
-	  <div id="navbarBasicExample" class="navbar-menu">
-	    <div class="navbar-start">
-	      <a href="{% url 'home' %}" class="navbar-item">
-	        Home
-	      </a>
-
-	      <a class="navbar-item">
-	        Services
-	      </a>
-	    </div>
-
-	    <div class="navbar-end">
-	      <div class="navbar-item">
-	      	{% if user.is_authenticated %}
-	      		<div class="buttons">
-	      		<a href="{% url 'logout' %}" class="button is-light">
-		            Logout
-		          </a>
-	      		</div>
-	      	{% else %}
-  				<div class="buttons">
-		          <a href="{% url 'signup' %}" class="button">
-		            <strong>Sign up</strong>
-		          </a>
-		          <a href="{% url 'login' %}" class="button is-light">
-		            Log in
-		          </a>
-		        </div>
-			{% endif %}
-	      </div>
-	    </div>
-	  </div>
-	</nav>
-	<div class="container">
-    	<main>{% block content %} {% endblock %}</main>
-	</div>
-	  <footer class="footer">
-		  <div class="content has-text-centered">
-		    <p>
-		      <strong>Eventr:phl</strong> by <a href="#">Made4u developers</a>.
-		      <br/>
-		      © Copyright 2020 Made4u, Co.
-		    </p>
-		  </div>
-	  </footer>
+	<div class="top-bar">
+      <div class="row">
+        <div class="top-bar-left">
+          <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text"><img src="{% static 'togobi-logo.png' %}" width="112" height="28"></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </div>
+	    <div class="top-bar-right">
+		    <ul class="menu">
+		    	{% if user.is_authenticated %}
+		    		<li><a href="{% url 'logout' %}">Logout</a></li>
+		    	{% else %}
+		    		<li><a href="{% url 'signup' %}">Sign up</a></li>
+			    	<li><a href="{% url 'login' %}" class="button">Login</a></li>
+		    	{% endif %}
+		    </ul>
+	  	</div>
+      </div>
+    </div>
+ 	<div class="row medium-8 large-7 columns">
+ 		<main>{% block content %} {% endblock %}</main>
+    </div>
   </body>
-      <script src="{% static 'bulma.js' %}"></script>
+    <script defer src="{% static 'jquery-2.1.4.min.js' %}"></script>
+    <script defer src="{% static 'foundation.js' %}"></script>
 </html>
