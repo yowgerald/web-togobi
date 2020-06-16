@@ -1,9 +1,69 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-{% else %}
-  <p>You are not logged in</p>
-{% endif %}
+	{% if user.is_authenticated %}
+  		Hi {{ user.username }}!
+	{% else %}
+  		<p>You are not logged in</p>
+	{% endif %}
+	<hr>
+  	<h4 style="margin: 0;" class="text-center">LATEST STORIES</h4>
+	<hr>
+	{# START #}
+	<div class="row">
+  		<div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+  			<article>
+  				<div id="home-contents"></div>
+    		</article>
+  		</div>
+
+  		<div class="large-4 columns">
+		    <aside>
+		      <div class="row column">
+		        <p class="lead">TRENDING POSTS</p>
+
+		        <div class="media-object">
+		          <div class="media-object-section">
+		            <img class="thumbnail" src= "https://placehold.it/100">
+		          </div>
+		          <div class="media-object-section">
+		            <h5>All I need is a space suit and I'm ready to go.</h5>
+		          </div>
+		        </div>
+		      </div>
+		    </aside>
+  		</div>
+	</div>
+	{# END #}
+
+	{# Templates: #}
+  	<script type="text/template" id="content-template">
+  		<% _.each(user_contents, function(user_content){ %>
+  			<% if (user_content.contents !== []) { %>
+  				<% _.each(user_content.contents, function(content){ %>
+		  			<div class="row">
+			      		<div class="large-6 columns">
+			        		<p><img src="https://placehold.it/600x370&text=Look at me!" alt="image for article" alt="article preview image"></p>
+			      		</div>
+			      		<div class="large-6 columns">
+			        		<h5><a href="#"><%= content.title %></a></h5>
+			        		<p>
+			        		<span><i class="fi-calendar"> 11/23/16 &nbsp;&nbsp;</i></span>
+			          		<span><i class="fi-torso"> By <%= user_content.username %>&nbsp;&nbsp;</i></span>
+			          		<span><i class="fi-comments"> 6 attendees</i></span>
+			        		</p>
+			        		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum delectus aperiam nesciunt magni facilis ullam.</p>
+			      		</div>
+			    	</div>
+    				<hr>
+  				<% }); %>
+  			 <% } %>
+    	<% }); %>
+    </script>
+
+
+{% load static %}
+<script src="{% static 'frameworks/backbone/underscore.js' %}"></script>
+<script src="{% static 'frameworks/backbone/backbone.js' %}"></script>
+<script src="{% static 'js/home.js' %}"></script>
 {% endblock %}

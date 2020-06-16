@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'togobi.apps.TogobiConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +144,12 @@ EMAIL_FILE_PATH = 'sent_emails'
 # EMAIL_PORT = 465
 # EMAIL_USE_SSL = True
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        # TODO: may need to change to 'rest_framework.permissions.IsAuthenticated',
+    ]
+}

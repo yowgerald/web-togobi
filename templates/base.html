@@ -4,7 +4,7 @@
     <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
-	<link rel="stylesheet" href="{% static 'foundation.min.css' %}">
+	<link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
   <body>
@@ -29,11 +29,13 @@
 		    </ul>
 	  	</div>
       </div>
-    </div>
- 	<div class="row medium-8 large-7 columns">
- 		<main>{% block content %} {% endblock %}</main>
-    </div>
+  </div>
+    <div class="row column">
+      <script src="{% static 'frameworks/jquery-2.1.4.min.js' %}"></script>
+ 		  <main>{% block content %} {% endblock %}</main>
+  </div>
   </body>
-    <script defer src="{% static 'jquery-2.1.4.min.js' %}"></script>
-    <script defer src="{% static 'foundation.js' %}"></script>
+    <script defer src="{% static 'frameworks/foundation/foundation.js' %}"></script>
 </html>
+
+{# TODO: change frameworks source to prod version ini deployment #}
