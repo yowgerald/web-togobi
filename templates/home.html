@@ -6,10 +6,10 @@
 	{% else %}
   		<p>You are not logged in</p>
 	{% endif %}
-	<hr>
-  	<h4 style="margin: 0;" class="text-center">LATEST STORIES</h4>
-	<hr>
 	{# START #}
+	<div class="row column">
+  		<h4 style="margin: 0;" class="text-center">LATEST</h4>
+	</div>
 	<div class="row">
   		<div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
   			<article>
@@ -18,20 +18,32 @@
   		</div>
 
   		<div class="large-4 columns">
-		    <aside>
-		      <div class="row column">
-		        <p class="lead">TRENDING POSTS</p>
-
-		        <div class="media-object">
-		          <div class="media-object-section">
-		            <img class="thumbnail" src= "https://placehold.it/100">
-		          </div>
-		          <div class="media-object-section">
-		            <h5>All I need is a space suit and I'm ready to go.</h5>
-		          </div>
-		        </div>
-		      </div>
-		    </aside>
+  			<aside>
+      			<br>
+      			<div class="row column">
+			        <p class="lead">TODAY</p>
+			        <div class="media-object">
+			          <div class="media-object-section">
+			            <img class="thumbnail" src= "https://placehold.it/100">
+			          </div>
+			          <div class="media-object-section">
+			            <h5>... is having a party today.</h5>
+			          </div>
+			        </div>
+		      	</div>
+		      	<hr>
+	      		<div class="row column">
+	        		<p class="lead">TRENDING</p>
+			        <div class="media-object">
+			          <div class="media-object-section">
+			            <img class="thumbnail" src= "https://placehold.it/100">
+			          </div>
+			          <div class="media-object-section">
+			            <h5>All I need is a space suit and I'm ready to go.</h5>
+			          </div>
+			        </div>
+	      		</div>
+      		</aside>
   		</div>
 	</div>
 	{# END #}
@@ -46,13 +58,22 @@
 			        		<p><img src="https://placehold.it/600x370&text=Look at me!" alt="image for article" alt="article preview image"></p>
 			      		</div>
 			      		<div class="large-6 columns">
-			        		<h5><a href="#"><%= content.title %></a></h5>
+			        		<h5><a href="/content/<%= content.id %>"><%= content.title %></a></h5>
 			        		<p>
-			        		<span><i class="fi-calendar"> 11/23/16 &nbsp;&nbsp;</i></span>
+			        		<span><i class="fi-calendar"> <%= content.target_date %> &nbsp;&nbsp;</i></span>
 			          		<span><i class="fi-torso"> By <%= user_content.username %>&nbsp;&nbsp;</i></span>
 			          		<span><i class="fi-comments"> 6 attendees</i></span>
 			        		</p>
-			        		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum delectus aperiam nesciunt magni facilis ullam.</p>
+			        		<p><%= content.description %></p>
+			        		<div class="small secondary expanded button-group">
+			        			{% if user.is_authenticated %}
+  									<a class="button" href="/content/<%= content.id %>/join">Join</a>
+								{% else %}
+  									<a class="button" href="{% url 'login' %}">Join</a>
+								{% endif %}
+            					<a class="button">Bookmark</a>
+            					<a class="button">Share</a>
+          					</div>
 			      		</div>
 			    	</div>
     				<hr>

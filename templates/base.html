@@ -1,6 +1,8 @@
-<html>
+<!doctype html>
+<html class="no-js" lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
@@ -34,8 +36,28 @@
       <script src="{% static 'frameworks/jquery-2.1.4.min.js' %}"></script>
  		  <main>{% block content %} {% endblock %}</main>
   </div>
+<footer>
+  <div class="row expanded callout secondary">
+  <div class="medium-6 columns">
+      <ul class="menu">
+        <li><a href="#">Legal</a></li>
+        <li><a href="#">Partner</a></li>
+        <li><a href="#">Explore</a></li>
+      </ul>
+    </div>
+
+    <div class="medium-6 columns">
+      <ul class="menu align-right">
+        <li class="menu-text">Copyright © 2020 Togobi</li>
+      </ul>
+    </div>
+  </div>
+</footer>
   </body>
-    <script defer src="{% static 'frameworks/foundation/foundation.js' %}"></script>
+    <script src="{% static 'frameworks/foundation/foundation.js' %}"></script>
+    <script>
+      $(document).foundation();
+    </script>
 </html>
 
-{# TODO: change frameworks source to prod version ini deployment #}
+{# TODO: change frameworks source to prod version in deployment #}

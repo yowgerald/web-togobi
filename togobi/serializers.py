@@ -6,8 +6,11 @@ class ContentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Content
 		fields = (
+			'id',
 			'title',
 			'description',
+			'tags',
+			'target_date'
 			)
 
 class UserContentSerializer(serializers.ModelSerializer):

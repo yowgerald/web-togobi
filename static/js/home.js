@@ -5,8 +5,11 @@ app.UserContent = Backbone.Model.extend({
   defaults: {
     username: '',
     contents: {
+      id: '',
       title: '',
-      description: ''
+      description: '',
+      tags: '',
+      target_date: ''
     },
   }
 });
