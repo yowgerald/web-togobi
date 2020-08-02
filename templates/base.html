@@ -6,8 +6,10 @@
     <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
-	<link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
+  <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
+  <link rel="stylesheet" href="{% static 'frameworks/foundation/motion-ui.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
 </head>
   <body>
 	<div class="top-bar">
@@ -34,6 +36,7 @@
   </div>
     <div class="row column">
       <script src="{% static 'frameworks/jquery-2.1.4.min.js' %}"></script>
+      <script src="{% static 'js/samples.js' %}"></script>
  		  <main>{% block content %} {% endblock %}</main>
   </div>
 <footer>

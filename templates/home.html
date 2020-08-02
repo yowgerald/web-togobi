@@ -11,10 +11,70 @@
   		<h4 style="margin: 0;" class="text-center">LATEST</h4>
 	</div>
 	<div class="row">
-  		<div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+		  <div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+			<a href="{% url 'content_add'%}" class="button ffab">Add Something</a>
   			<article>
-  				<div id="home-contents"></div>
-    		</article>
+				{% for content in contents %}
+					<div class="row">
+						<div class="large-6 columns">
+							<p><img src="#" alt="image for article" alt="article preview image"></p>
+						</div>
+						<div class="large-6 columns">
+							<h5><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h5>
+							<p>
+							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
+							<br/>
+							<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
+							<br/>
+							<span><i class="fi-comments"> 6 attendees</i></span>
+							</p>
+							<p>{{ content.description }}</p>
+							<div class="small secondary expanded button-group">
+								{% if user.is_authenticated %}
+									  <a class="button" href="{% url 'content_join' content.id %}">Join</a>
+								{% else %}
+									  <a class="button" href="{% url 'login' %}">Join</a>
+								{% endif %}
+								<a class="button">Bookmark</a>
+								<a class="button">Share</a> 
+							  </div>
+						</div>
+					</div>
+					<div class="callout">
+						<ul class="menu simple">
+						  <li><a data-toggle="comments-{{ content.id }}">Comments: 3</a></li>
+						</ul>
+					</div>
+					<div id="comments-{{ content.id }}" data-toggler data-animate="hinge-in-from-top hinge-out-from-top" hidden>
+						<h4>Hello!</h4>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta quas optio alias voluptas nobis iusto mollitia asperiores incidunt reprehenderit doloribus voluptatibus officiis minus, inventore, quasi nisi. Consequuntur, quidem. Sint, dicta?</p>
+					</div>
+					{% if not forloop.last %}
+						<hr>
+					{% endif %}
+				{% endfor %}
+				{% if contents.has_other_pages %}
+					<ul class="pagination" role="navigation" aria-label="Pagination">
+						{% if contents.has_previous %}
+							<li><a href="?page={{ contents.previous_page_number }}">Previous <span class="show-for-sr">page</span></a></li>
+						{% else %}
+							<li class="disabled">Previous <span class="show-for-sr">page</span></li>
+						{% endif %}
+						{% for i in contents.paginator.page_range %}
+							{% if contents.number == i %}
+								<li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
+							{% else %}
+								<li><a href="?page={{ i }}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
+						  	{% endif %}
+						{% endfor %}
+						{% if contents.has_next %}
+							<li><a href="?page={{ contents.next_page_number }}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+						{% else %}
+						<li class="disabled">Next <span class="show-for-sr">page</span></li>
+						{% endif %}
+					</ul>
+				{% endif %}
+			</article>
   		</div>
 
   		<div class="large-4 columns">
@@ -24,7 +84,7 @@
 			        <p class="lead">TODAY</p>
 			        <div class="media-object">
 			          <div class="media-object-section">
-			            <img class="thumbnail" src= "https://placehold.it/100">
+			            <img class="thumbnail" src= "#">
 			          </div>
 			          <div class="media-object-section">
 			            <h5>... is having a party today.</h5>
@@ -36,7 +96,18 @@
 	        		<p class="lead">TRENDING</p>
 			        <div class="media-object">
 			          <div class="media-object-section">
-			            <img class="thumbnail" src= "https://placehold.it/100">
+			            <img class="thumbnail" src= "#">
+			          </div>
+			          <div class="media-object-section">
+			            <h5>All I need is a space suit and I'm ready to go.</h5>
+			          </div>
+			        </div>
+				  </div>
+				  <div class="row column">
+	        		<p class="lead">BOOKMARKS</p>
+			        <div class="media-object">
+			          <div class="media-object-section">
+			            <img class="thumbnail" src= "#">
 			          </div>
 			          <div class="media-object-section">
 			            <h5>All I need is a space suit and I'm ready to go.</h5>
@@ -46,45 +117,7 @@
       		</aside>
   		</div>
 	</div>
-	{# END #}
-
-	{# Templates: #}
-  	<script type="text/template" id="content-template">
-  		<% _.each(user_contents, function(user_content){ %>
-  			<% if (user_content.contents !== []) { %>
-  				<% _.each(user_content.contents, function(content){ %>
-		  			<div class="row">
-			      		<div class="large-6 columns">
-			        		<p><img src="https://placehold.it/600x370&text=Look at me!" alt="image for article" alt="article preview image"></p>
-			      		</div>
-			      		<div class="large-6 columns">
-			        		<h5><a href="/content/<%= content.id %>"><%= content.title %></a></h5>
-			        		<p>
-			        		<span><i class="fi-calendar"> <%= content.target_date %> &nbsp;&nbsp;</i></span>
-			          		<span><i class="fi-torso"> By <%= user_content.username %>&nbsp;&nbsp;</i></span>
-			          		<span><i class="fi-comments"> 6 attendees</i></span>
-			        		</p>
-			        		<p><%= content.description %></p>
-			        		<div class="small secondary expanded button-group">
-			        			{% if user.is_authenticated %}
-  									<a class="button" href="/content/<%= content.id %>/join">Join</a>
-								{% else %}
-  									<a class="button" href="{% url 'login' %}">Join</a>
-								{% endif %}
-            					<a class="button">Bookmark</a>
-            					<a class="button">Share</a>
-          					</div>
-			      		</div>
-			    	</div>
-    				<hr>
-  				<% }); %>
-  			 <% } %>
-    	<% }); %>
-    </script>
 
 
 {% load static %}
-<script src="{% static 'frameworks/backbone/underscore.js' %}"></script>
-<script src="{% static 'frameworks/backbone/backbone.js' %}"></script>
-<script src="{% static 'js/home.js' %}"></script>
 {% endblock %}

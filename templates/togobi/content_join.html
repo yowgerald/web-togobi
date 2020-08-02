@@ -1,72 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Join Payment{% endblock %}
 {% block content %}
-<h3>Payment</h3>
-<form method="post">
-				{% csrf_token %}
-				{% if form.non_field_errors %}
-					<div class="warning">
-						<ul>
-	    					{{ form.non_field_errors.as_ul }}
-						</ul>
-					</div>
-				{% endif %}
-				<br>
-				<h5>Billing Address</h5>
-				<p>
-			  		<label for="id_fullname">Full Name</label>
-					<input type="text" name="fullname" autocomplete="fullname" maxlength="150" required="" id="id_fullname">
-					<span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
-				</p>
-
-				<p>
-			  		<label for="id_email">Email</label>
-					<input type="email" name="email" autocomplete="email" maxlength="150" required="" id="id_email">
-					<span class="helptext">Must be valid and existing email address.</span>
-				</p>
-				<p>
-			  		<label for="id_phone">Phone</label>
-					<input type="text" name="phone" autocomplete="phone" maxlength="20" required="" id="id_phone">
-					<span class="helptext">Must be valid phone number.</span>
-				</p>
-				<p>
-			  		<label for="id_address">Address</label>
-					<input type="text" name="address" autocomplete="address" maxlength="150" required="" id="id_address">
-					<span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
-				</p>
-				<p>
-			  		<label for="id_city">City</label>
-					<input type="text" name="city" autocomplete="city" maxlength="150" required="" id="id_city">
-					<span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
-				</p>
-				<p>
-			  		<label for="zip">Zip</label>
-					<input type="text" name="zip" autocomplete="zip" maxlength="20" required="" id="zip">
-					<span class="helptext">Required. 20 characters or fewer. Digits only.</span>
-				</p>
-
-				<hr>
-				<h5>Payment</h5>
-				<p>
-			  		<label for="id_nameoncard">Name on Card</label>
-					<input type="text" name="nameoncard" autocomplete="nameoncard" maxlength="150" required="" id="id_nameoncard">
-					<span class="helptext">Required. 150 characters or fewer. Letters, digits only.</span>
-				</p>
-				<p>
-			  		<label for="id_cardnumber">Card Number</label>
-					<input type="text" name="cardnumber" maxlength="150" required="" id="id_cardnumber">
-					<span class="helptext">Required. 50 characters or fewer. Letters, digits only.</span>
-				</p>
-				<p>
-			  		<label for="id_expirydate">Expiry Date</label>
-					<input type="text" name="expirydate" maxlength="20" required="" id="id_expirydate">
-					<span class="helptext">Must be valid month and date.</span>
-				</p>
-					<p>
-			  		<label for="id_cvv">CVV</label>
-					<input type="text" name="cvv" maxlength="10" required="" id="id_cvv">
-					<span class="helptext">Required. 10 characters or fewer. Digits only.</span>
-				</p>
-				<button type="submit" class="button">Confirm Payment</button>
-	</form>
-	{% endblock %}
+<h3>Payments</h3>
+<br/>
+<button class="button paymaya">Paymaya</button>
+<script src="https://unpkg.com/paymaya-js-sdk@2.0.0/dist/bundle.js"></script>
+<script>
+$(function(){
+	const BTN_PAYMAYA = $('.paymaya');
+	BTN_PAYMAYA.click(function(){
+		PayMayaSDK.init(paymayaPublicKey, true);
+    	PayMayaSDK.createCheckout(paymayaCheckoutObject);
+	});
+});
+</script>
+{% endblock %}

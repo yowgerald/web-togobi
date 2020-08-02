@@ -24,9 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', include('payments.urls')),
     path('', include('togobi.urls')),
 
     # api
-    path('api/v1/user_contents/', views.user_content_collection, name='user_contents'),
+    path('api/v1/contents/',
+         views.content_collection, name='user_contents'),
 ]
