@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Add content{% endblock %}
 {% block content %}
-<h3>Add content</h3>
+    <h3>Add content</h3>
+    <form method="post" action="{% url 'content_add' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ content_form.as_p }}
+        {{ content_file_form.as_p }}
+        <!-- TODO: add mosaic generator, output video, free border-->
+        <button type="submit" class="button">Create</button>
+</form>
 {% endblock %}

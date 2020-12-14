@@ -2,9 +2,6 @@
 
 ## COMMANDS
 
-### create a project
-django-admin startproject <config>
-
 ### migrate
 python manage.py migrate
 

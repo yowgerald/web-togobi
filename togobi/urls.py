@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^content/detail/(?P<id>\d+)$',
         views.content_details, name='content_details'),
     url(r'^content/add', views.content_add, name='content_add'),
-    url(r'^content/join/(?P<id>\d+)$', views.content_join, name='content_join'),
+    url(r'^content/join', views.content_join, name='content_join'),
+    url(r'^content/bookmark', views.content_join, name='content_bookmark'),
 ]

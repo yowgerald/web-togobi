@@ -131,7 +131,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 LOGIN_REDIRECT_URL = 'home'
@@ -162,3 +162,8 @@ REST_FRAMEWORK = {
     ],
     'DATETIME_FORMAT': '%m/%d/%Y %H:%M',
 }
+
+# for google cloud storage
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
+    BASE_DIR, 'project-togobi-b14edac35011.json')
+GCP_BUCKET_NAME = 'bucket-togobi'

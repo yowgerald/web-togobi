@@ -6,40 +6,34 @@
 			<h3>Sign Up</h3>
 			<form method="post">
 				{% csrf_token %}
-				{% if form.non_field_errors %}
-					<div class="warning">
-						<ul>
-	    					{{ form.non_field_errors.as_ul }}
-						</ul>
-					</div>
+
+				{% if form.errors%}
+				<div class="warning">
+					<ul>
+						{% for key,value in form.errors.items %} 
+							{{ value|escape }}</li>
+						{% endfor %}
+					</ul>
+				</div>
 				{% endif %}
 				<p>
 			  		<label for="id_username">Username</label>
 					<input type="text" name="username" autocomplete="username" maxlength="150" required="" id="id_username">
-					<span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
 				</p>
 
 				<p>
 			  		<label for="id_email">Email</label>
 					<input type="email" name="email" autocomplete="email" maxlength="150" required="" id="id_email">
-					<span class="helptext">Must be valid and existing email address</span>
 				</p>
 
 				<p>
 					<label for="id_password1">Password</label>
 					<input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
-					<ul>
-						<li>Your password can’t be too similar to your other personal information.</li>
-						<li>Your password must contain at least 8 characters.</li>
-						<li>Your password can’t be a commonly used password.</li>
-						<li>Your password can’t be entirely numeric.</li>
-					</ul>
 				</p>
 
 				<p>
 					<label for="id_password2">Password Confirmation</label>
 					<input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
-					<span class="helptext">Enter the same password as before, for verification.</span>
 				</p>
 				<button type="submit" class="button">Sign Up</button>
 			</form>

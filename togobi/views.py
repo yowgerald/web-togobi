@@ -1,20 +1,40 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from togobi.models import Content
-from togobi.serializers import ContentSerializer
-from datetime import datetime, timedelta
 from django.core.paginator import Paginator
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from datetime import datetime, timedelta, date
+import mimetypes
+from pathlib import Path
+from togobi.forms import ContentAddForm, ContentFileAddForm
+
+from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin
+from togobi.serializers import ContentSerializer
+
+from google.auth.transport.requests import AuthorizedSession
+from google.resumable_media.requests import MultipartUpload
+from google.cloud import storage
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 
 # Create your views here.
-
+time_threshold = datetime.now() + timedelta(hours=1)
 
 def content_list(request):
     contents = get_contents(request)
-    return render(request, 'home.html', {'contents': contents})
+    contents_today = Content.objects.filter(
+            target_date__day=date.today().day).order_by('-target_date')
+    contents_bookmark = []
+    if request.user.is_authenticated:
+        contents_bookmark = ContentBookmark.objects.filter(
+            user = request.user, content__target_date__gt=time_threshold).order_by('-content__target_date')
+    return render(request, 'home.html', {
+        'contents': contents,
+        'contents_today' : contents_today,
+        'contents_bookmark' : contents_bookmark
+        })
 
 
 def content_details(request, id):
@@ -23,17 +43,79 @@ def content_details(request, id):
     return render(request, 'content_details.html', {'content': content})
 
 
+@login_required
 def content_add(request):
-    return render(request, 'content_add.html', {})
+    if request.method == 'POST':
+        content_form = ContentAddForm(request.POST)
+        if content_form.is_valid():
+            content = content_form.save(commit=False)
+            content.user = request.user
+            content.save()
+
+            storage_client = storage.Client()
+            transport = AuthorizedSession(credentials=storage_client._credentials)
+            bucket = settings.GCP_BUCKET_NAME
+            file = request.FILES.get('source', False)
+            if (file):
+                # TODO: need refactor
+                file.open()
+                data = file.read()
+                file.close()
+                url_template = (
+                    u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=multipart')
+                upload_url = url_template.format(bucket=bucket)
+                upload = MultipartUpload(upload_url)
+                ext = Path(file.name).suffix
+                filename = "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
+                metadata = {u'name': filename, }
+                response = upload.transmit(
+                    transport, data, metadata, file.content_type)
+                content_file = ContentFile()
+                content_file.source = filename
+                content_file.content = content
+                content_file.save()
+            return redirect('content_details', content.pk)
+        else:
+            print('not valid')
+    else:
+        content_form = ContentAddForm(initial={})
+    # TODO: catch exception, saying internet speed is not good for uploading
+    context = {
+        'content_form': content_form,
+        'content_file_form': ContentFileAddForm(initial={}),
+    }
+    return render(request, 'content_add.html', context)
 
 
-def content_join(request, id):
-    return render(request, 'content_join.html', {})
-
-
-def get_contents(request):
+@login_required
+def content_join(request):
     if request.method == 'GET':
-        time_threshold = datetime.now() + timedelta(hours=5)
+        content = Content.objects.get(id=request.GET.get("content"))
+        content_join = ContentJoin.objects.filter(
+            user=request.user, content=content
+        ).first()
+        
+        if not content_join:
+            return render(request, 'content_join.html', {'content': content})
+        else:
+            return render(request, 'content_ticket_lost.html', {'content': content})
+    else:
+        content = Content.objects.get(id=request.POST.get("content"))
+        content_join = ContentJoin.objects.filter(
+            user=request.user, content=content
+        ).first()
+
+        content_join = ContentJoin()
+        content_join.user = request.user
+        content_join.content = content
+        content_join.application_date = datetime.now()
+        content_join.status = 1 # status pending
+        content_join.save()
+        return render(request, 'content_ticket.html', {'content': content})
+
+
+def get_contents(request):  # common
+    if request.method == 'GET':
         contents = Content.objects.filter(
             target_date__gt=time_threshold).order_by('-target_date')
         page = request.GET.get('page', 1)

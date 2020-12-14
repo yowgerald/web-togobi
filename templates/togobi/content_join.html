@@ -3,15 +3,9 @@
 {% block content %}
 <h3>Payments</h3>
 <br/>
-<button class="button paymaya">Paymaya</button>
-<script src="https://unpkg.com/paymaya-js-sdk@2.0.0/dist/bundle.js"></script>
-<script>
-$(function(){
-	const BTN_PAYMAYA = $('.paymaya');
-	BTN_PAYMAYA.click(function(){
-		PayMayaSDK.init(paymayaPublicKey, true);
-    	PayMayaSDK.createCheckout(paymayaCheckoutObject);
-	});
-});
-</script>
+<form method="post" action="{% url 'content_join' %}">
+	{% csrf_token %}
+	<input type="hidden" name="content" value="{{ content.id }}">
+	<button type="submit" class="button paymaya">Continue</button>
+</form>
 {% endblock %}
