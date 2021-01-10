@@ -3,11 +3,16 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
+from django.http import JsonResponse
+from django.db.models import Count
+from django.db.models import TextField
+from django.db.models.functions import Concat
 import mimetypes
 from pathlib import Path
-from togobi.forms import ContentAddForm, ContentFileAddForm
 
+from togobi.forms import ContentAddForm, ContentFileAddForm
 from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin
 from togobi.serializers import ContentSerializer
 
@@ -27,19 +32,22 @@ def content_list(request):
     contents_today = Content.objects.filter(
             target_date__day=date.today().day).order_by('-target_date')
     contents_bookmark = []
+    contents_top = ContentJoin.objects.annotate(distinct_name=Concat(
+        'content_id', 'content_id', output_field=TextField())).order_by('distinct_name').distinct('distinct_name')
     if request.user.is_authenticated:
         contents_bookmark = ContentBookmark.objects.filter(
             user = request.user, content__target_date__gt=time_threshold).order_by('-content__target_date')
     return render(request, 'home.html', {
         'contents': contents,
         'contents_today' : contents_today,
+        'contents_top' : contents_top,
         'contents_bookmark' : contents_bookmark
         })
 
 
-def content_details(request, id):
+def content_details(request):
     if request.method == 'GET':
-        content = Content.objects.get(id=id)
+        content = Content.objects.get(id=request.GET.get("content"))
     return render(request, 'content_details.html', {'content': content})
 
 
@@ -74,7 +82,7 @@ def content_add(request):
                 content_file.source = filename
                 content_file.content = content
                 content_file.save()
-            return redirect('content_details', content.pk)
+            return render(request, 'content_details.html', {'content': content})
         else:
             print('not valid')
     else:
@@ -101,9 +109,6 @@ def content_join(request):
             return render(request, 'content_ticket_lost.html', {'content': content})
     else:
         content = Content.objects.get(id=request.POST.get("content"))
-        content_join = ContentJoin.objects.filter(
-            user=request.user, content=content
-        ).first()
 
         content_join = ContentJoin()
         content_join.user = request.user
@@ -114,10 +119,27 @@ def content_join(request):
         return render(request, 'content_ticket.html', {'content': content})
 
 
+def content_bookmark(request):
+    content = Content.objects.get(id=request.POST.get("content"))
+    user = User.objects.get(id=request.POST.get("user"))
+    if content and user:
+        content_bookmark = ContentBookmark.objects.filter(
+            content=content, user=user
+        ).first()
+        if not content_bookmark:
+            content_bookmark = ContentBookmark()
+            content_bookmark.content = content
+            content_bookmark.user = user
+            content_bookmark.save()
+            return JsonResponse({'success': 'true'})
+
+    return JsonResponse({'success': 'false'})
+
+
 def get_contents(request):  # common
     if request.method == 'GET':
         contents = Content.objects.filter(
-            target_date__gt=time_threshold).order_by('-target_date')
+            target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
         page = request.GET.get('page', 1)
         paginator = Paginator(contents, 10)
         contents = paginator.page(page)

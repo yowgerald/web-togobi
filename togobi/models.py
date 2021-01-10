@@ -52,8 +52,8 @@ class ContentBookmark(models.Model):
 class ContentJoin(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     content = models.ForeignKey(Content, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
-    remarks = models.CharField(max_length=200)
+    status = models.IntegerField()
+    remarks = models.CharField(max_length=200, null=True)
     application_date = models.DateTimeField('date applied')
     accepted_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='content_author')
     accepted_date = models.DateTimeField('date accepted', null=True)

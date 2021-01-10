@@ -15,34 +15,29 @@
 							<p><img src="#" alt="image for article" alt="article preview image"></p>
 						</div>
 						<div class="large-6 columns">
-							<h5><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h5>
+							<form id="form-details" method="get" action="{% url 'content_details' %}">
+								{% csrf_token %}
+								<input type="hidden" name="content" value="{{ content.id }}">
+								<h5><a href="#" onclick="document.forms['form-details'].submit();">{{content.title}}</a></h5>
+							</form>
 							<p>
 							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
 							<br/>
 							<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
 							<br/>
-							<span><i class="fi-comments"> 6 attendees</i></span>
+							<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
 							</p>
 							<p>{{ content.description }}</p>
 							<div class="small secondary expanded button-group">
-								<form method="get" action="{% url 'content_join' %}">
+								<form id="form-join" method="get" action="{% url 'content_join' %}">
 									{% csrf_token %}
 									<input type="hidden" name="content" value="{{ content.id }}">
-									<button type="submit" class="button">Join</button>
 								</form>
-								<a class="button" name="bookmark" data-id="{{ content.id }}">Bookmark</a>
+								<a href="#" onclick="document.forms['form-join'].submit();" class="button">Join</a>
+								<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
 								<a class="button">Share</a>
 							  </div>
 						</div>
-					</div>
-					<div class="callout">
-						<ul class="menu simple">
-						  <li><a data-toggle="comments-{{ content.id }}">Comments: 3</a></li>
-						</ul>
-					</div>
-					<div id="comments-{{ content.id }}" data-toggler data-animate="hinge-in-from-top hinge-out-from-top" hidden>
-						<h4>Hello!</h4>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta quas optio alias voluptas nobis iusto mollitia asperiores incidunt reprehenderit doloribus voluptatibus officiis minus, inventore, quasi nisi. Consequuntur, quidem. Sint, dicta?</p>
 					</div>
 					{% if not forloop.last %}
 						<hr>
@@ -85,20 +80,26 @@
 			    	      <div class="media-object-section">
 			    	        <h5>{{ content.title }}</h5>
 			    	      </div>
-			    		</div>
+						</div>
+					{% empty %}
+						No items available yet.
 					{% endfor %} 
 				</div>
 		      	<hr>
 	      		<div class="row column">
-	        		<p class="lead">TRENDING</p>
-			        <div class="media-object">
-			          <div class="media-object-section">
-			            <img class="thumbnail" src= "#">
-			          </div>
-			          <div class="media-object-section">
-			            <h5>All I need is a space suit and I'm ready to go.</h5>
-			          </div>
-			        </div>
+	        		<p class="lead">TOP</p>
+					{% for top in contents_top %}
+						<div class="media-object">
+						  <div class="media-object-section">
+							<img class="thumbnail" src= "#">
+						  </div>
+						  <div class="media-object-section">
+							<h5>{{ top.content.title }}</h5>
+						  </div>
+						</div>
+					{% empty %}
+						No items available yet.
+					{% endfor %} 
 				  </div>
 				  {% if user.is_authenticated %}
 				  <hr>
@@ -113,13 +114,33 @@
 							<h5>{{ bookmark.content.title }}</h5>
 						  </div>
 						</div>
+					{% empty %}
+						No items available yet.
 					{% endfor %} 
 				  </div>
 				  {% endif %}
       		</aside>
   		</div>
 	</div>
-
-
 {% load static %}
+{% block javascript %}
+  <script>
+	var token = '{{csrf_token}}';
+	$(document).on("click", "[name='bookmark-content']", function() {
+		$.ajax({
+			headers: { "X-CSRFToken": token },
+    	    url: "/content/bookmark",
+    	    data: {
+				content : $(this).data('id'),
+				user: "{{ user.id }}"
+			},
+			method: "post",
+    	    dataType: 'json',
+    	    success: function (data) {
+				console.log(data)
+    	    }
+    	});
+	})
+  </script>
+{% endblock %}
 {% endblock %}
