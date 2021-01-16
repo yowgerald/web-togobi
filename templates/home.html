@@ -12,7 +12,16 @@
 				{% for content in contents %}
 					<div class="row">
 						<div class="large-6 columns">
-							<p><img src="#" alt="image for article" alt="article preview image"></p>
+							{% for file in content.contentfile_set.all %}
+							<p>{% if file.f_type == 'Image' %}
+									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image">
+								{% elif file.f_type == 'Video'%}
+								<!-- TODO: may need to add 3rd party player for playing -->
+									<video src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="video for article" alt="article preview video" class="home-video">
+								{% endif%}</p>
+								{% empty %}
+								<!-- TODO: show system generated image from title -->
+							{% endfor %}
 						</div>
 						<div class="large-6 columns">
 							<form id="form-details" method="get" action="{% url 'content_details' %}">
@@ -68,6 +77,7 @@
   		</div>
 
   		<div class="large-4 columns">
+			  <!-- TODO: show the small version of media, or maybe make it bigger -->
   			<aside>
 				  <br>
 				  <div class="row column">
@@ -137,6 +147,7 @@
 			method: "post",
     	    dataType: 'json',
     	    success: function (data) {
+				// TODO: update the bookmark part using js
 				console.log(data)
     	    }
     	});

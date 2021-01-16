@@ -9,8 +9,8 @@ from django.http import JsonResponse
 from django.db.models import Count
 from django.db.models import TextField
 from django.db.models.functions import Concat
-import mimetypes
 from pathlib import Path
+from pymediainfo import MediaInfo
 
 from togobi.forms import ContentAddForm, ContentFileAddForm
 from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin
@@ -60,11 +60,19 @@ def content_add(request):
             content.user = request.user
             content.save()
 
-            storage_client = storage.Client()
-            transport = AuthorizedSession(credentials=storage_client._credentials)
-            bucket = settings.GCP_BUCKET_NAME
             file = request.FILES.get('source', False)
-            if (file):
+            fileInfo = MediaInfo.parse(file)
+            f_type = False
+            # TODO: need to check the file size of the video, allowed size is 10mb of free users?
+            for track in fileInfo.tracks:
+                if track.track_type == "Image":
+                    f_type = track.track_type
+                elif track.track_type == "Video":
+                    f_type = track.track_type
+            if (file and f_type):
+                storage_client = storage.Client()
+                transport = AuthorizedSession(credentials=storage_client._credentials)
+                bucket = settings.GCP_BUCKET_NAME
                 # TODO: need refactor
                 file.open()
                 data = file.read()
@@ -80,6 +88,7 @@ def content_add(request):
                     transport, data, metadata, file.content_type)
                 content_file = ContentFile()
                 content_file.source = filename
+                content_file.f_type = f_type
                 content_file.content = content
                 content_file.save()
             return render(request, 'content_details.html', {'content': content})

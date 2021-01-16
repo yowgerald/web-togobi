@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_settings_export.settings_export',
             ],
         },
     },
@@ -166,3 +167,10 @@ REST_FRAMEWORK = {
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
     BASE_DIR, 'project-togobi-b14edac35011.json')
 GCP_BUCKET_NAME = 'bucket-togobi'
+GCP_BASE_URL = 'https://storage.cloud.google.com'
+
+# pass settings to templates
+SETTINGS_EXPORT = [
+    'GCP_BUCKET_NAME',
+    'GCP_BASE_URL'
+]

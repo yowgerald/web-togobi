@@ -21,10 +21,6 @@ class UserDetail(models.Model):
     updated_at = models.DateTimeField('date updated')
 
 
-class FileType(models.Model):
-    name = models.CharField(max_length=200)
-
-
 class Content(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=200)
@@ -41,8 +37,7 @@ class Content(models.Model):
 class ContentFile(models.Model):
     content = models.ForeignKey(Content, on_delete=models.CASCADE)
     source = models.CharField(max_length=200, null=True)
-    f_type = models.ForeignKey(
-        'FileType', on_delete=models.SET_NULL, null=True)
+    f_type = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=False)
 
 class ContentBookmark(models.Model):

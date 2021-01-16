@@ -8,3 +8,13 @@ body, .top-bar, .top-bar ul {
 	-webkit-box-shadow: 0 1px #E9EBEC;
 	box-shadow: 0 1px #E9EBEC;
 }
+
+.home-video {
+	max-width: 100%;
+    height: auto;
+}
+
+.home-image {
+	width: 100%;
+	height: auto;
+}
