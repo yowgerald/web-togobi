@@ -18,3 +18,7 @@ body, .top-bar, .top-bar ul {
 	width: 100%;
 	height: auto;
 }
+
+.home-image-small {
+	width: 65%;
+}
