@@ -15,20 +15,20 @@
 						<div class="large-6 columns">
 							{% for file in content.contentfile_set.all %}
 							<p>{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image">
+									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image">
 								{% elif file.f_type == 'Video'%}
 								<!-- TODO: may need to add 3rd party player for playing -->
-									<video src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="video for article" alt="article preview video" class="home-video">
+									<video src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="video for article" alt="article preview video" class="home-video">
 								{% endif%}</p>
 								{% empty %}
 								<!-- TODO: show system generated image from title -->
 							{% endfor %}
 						</div>
 						<div class="large-6 columns">
-							<form id="form-details" method="get" action="{% url 'content_details' %}">
+							<form id="form-details{{content.id}}" method="get" action="{% url 'content_details' %}">
 								{% csrf_token %}
 								<input type="hidden" name="content" value="{{ content.id }}">
-								<h5><a href="#" onclick="document.forms['form-details'].submit();">{{content.title}}</a></h5>
+								<h5><a href="#" onclick="document.forms['form-details{{content.id}}'].submit();">{{content.title}}</a></h5>
 							</form>
 							<p>
 							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
@@ -39,11 +39,11 @@
 							</p>
 							<p>{{ content.description }}</p>
 							<div class="small secondary expanded button-group">
-								<form id="form-join" method="get" action="{% url 'content_join' %}">
+								<form id="form-join{{content.id}}" method="get" action="{% url 'content_join' %}">
 									{% csrf_token %}
 									<input type="hidden" name="content" value="{{ content.id }}">
 								</form>
-								<a href="#" onclick="document.forms['form-join'].submit();" class="button">Join</a>
+								<a href="#" onclick="document.forms['form-join{{content.id}}'].submit();" class="button">Join</a>
 								<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
 								<a class="button">Share</a>
 							  </div>
@@ -88,7 +88,7 @@
 			    	      <div class="media-object-section">
 							{% for file in content.contentfile_set.all %}
 								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
+									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
 								{% elif file.f_type == 'Video'%}
 								<!-- TODO: need to generate gif from video -->
 								{% endif%}
@@ -112,7 +112,7 @@
 						  <div class="media-object-section">
 							{% for file in content.contentfile_set.all %}
 								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
+									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
 								{% elif file.f_type == 'Video'%}
 								<!-- TODO: need to generate gif from video -->
 								{% endif%}
@@ -137,7 +137,7 @@
 						  <div class="media-object-section">
 							{% for file in content.contentfile_set.all %}
 								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
+									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
 								{% elif file.f_type == 'Video'%}
 								<!-- TODO: need to generate gif from video -->
 								{% endif%}

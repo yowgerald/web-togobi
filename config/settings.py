@@ -168,9 +168,14 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
     BASE_DIR, 'project-togobi-b14edac35011.json')
 GCP_BUCKET_NAME = 'bucket-togobi'
 GCP_BASE_URL = 'https://storage.cloud.google.com'
+GCP_FOLDER_UPLOAD = 'uploads'
+
+LOCAL_FOLDER_TEMP = 'media/temps'
+LOCAL_FOLDER_OUTPUT = 'media/outputs'
 
 # pass settings to templates
 SETTINGS_EXPORT = [
     'GCP_BUCKET_NAME',
-    'GCP_BASE_URL'
+    'GCP_BASE_URL',
+    'GCP_FOLDER_UPLOAD'
 ]
