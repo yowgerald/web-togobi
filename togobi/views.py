@@ -56,42 +56,10 @@ def content_add(request):
     if request.method == 'POST':
         content_form = ContentAddForm(request.POST)
         if content_form.is_valid():
+            # TODO: file upload
             content = content_form.save(commit=False)
             content.user = request.user
             content.save()
-
-            file = request.FILES.get('source', False)
-            if (file):
-                fileInfo = MediaInfo.parse(file)
-                f_type = False
-                # TODO: need to check the file size of the video, allowed size is 10mb of free users?
-                for track in fileInfo.tracks:
-                    if track.track_type == "Image":
-                        f_type = track.track_type
-                    elif track.track_type == "Video":
-                        f_type = track.track_type
-                if (f_type):
-                    storage_client = storage.Client()
-                    transport = AuthorizedSession(credentials=storage_client._credentials)
-                    bucket = settings.GCP_BUCKET_NAME
-                    # TODO: need refactor
-                    file.open()
-                    data = file.read()
-                    file.close()
-                    url_template = (
-                        u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=multipart')
-                    upload_url = url_template.format(bucket=bucket)
-                    upload = MultipartUpload(upload_url)
-                    ext = Path(file.name).suffix
-                    filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
-                    metadata = {u'name': filename, }
-                    response = upload.transmit(
-                        transport, data, metadata, file.content_type)
-                    content_file = ContentFile()
-                    content_file.source = filename
-                    content_file.f_type = f_type
-                    content_file.content = content
-                    content_file.save()
             return render(request, 'content_details.html', {'content': content})
         else:
             print('not valid')
@@ -162,3 +130,4 @@ def content_collection(request):
     contents = get_contents(request)
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
+    
