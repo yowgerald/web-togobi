@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^content/add', views.content_add, name='content_add'),
     url(r'^content/join', views.content_join, name='content_join'),
     url(r'^content/bookmark', views.content_bookmark, name='content_bookmark'),
+    url(r'^manage/contents', views.own_contents, name='own_contents')
 ]

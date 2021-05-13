@@ -119,7 +119,7 @@ def get_contents(request):  # common
         contents = Content.objects.filter(
             target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
         page = request.GET.get('page', 1)
-        paginator = Paginator(contents, 10)
+        paginator = Paginator(contents, 20)
         contents = paginator.page(page)
     return contents
 
@@ -130,4 +130,16 @@ def content_collection(request):
     contents = get_contents(request)
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
-    
+
+
+# Manage own
+@login_required
+def own_contents(request):
+    contents = Content.objects.filter(
+        user_id = request.user.id).order_by('-created_at')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(contents, 20)
+    contents = paginator.page(page)
+    return render(request, 'manage/own_contents.html', {
+        'my_contents': contents,
+    })

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Details{% endblock %}
+{% block content %}
+<h3>My Contents</h3>
+<br/>
+<table id="tbl_contents">
+    <thead>
+        <tr>
+          <th width="25%">Title</th>
+          <th width="30%">Description</th>
+          <th>Target Date</th>
+          <th>Status</th>
+          <th>Created Date</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for content in my_contents %}
+        <tr>
+            <td> {{ content.title }} </td>
+            <td> {{ content.description }} </td>
+            <td> {{ content.target_date }} </td>
+            <td> {{ content.is_active }} </td>
+            <td> {{ content.created_at }} </td>
+            <td> Edit </td>
+            <td> Delete </td>
+        </tr>
+        {% endfor %} 
+      </tbody>
+</table>
+{% if my_contents.has_other_pages %}
+	<ul class="pagination" role="navigation" aria-label="Pagination">
+		{% if my_contents.has_previous %}
+			<li><a href="?page={{ my_contents.previous_page_number }}">Previous <span class="show-for-sr">page</span></a></li>
+		{% else %}
+			<li class="disabled">Previous <span class="show-for-sr">page</span></li>
+		{% endif %}
+		{% for i in my_contents.paginator.page_range %}
+			{% if my_contents.number == i %}
+				<li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
+			{% else %}
+				<li><a href="?page={{ i }}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
+		  	{% endif %}
+		{% endfor %}
+		{% if my_contents.has_next %}
+			<li><a href="?page={{ my_contents.next_page_number }}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+		{% else %}
+		<li class="disabled">Next <span class="show-for-sr">page</span></li>
+		{% endif %}
+	</ul>
+{% endif %}
+{% endblock %}

@@ -27,7 +27,7 @@ class Content(models.Model):
     description = models.CharField(max_length=200)
     tags = models.CharField(max_length=200)
     target_date = models.DateTimeField('target date', null=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     location = models.ForeignKey(
         'Location', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField('date created', auto_now_add=True)
