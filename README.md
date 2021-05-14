@@ -25,3 +25,7 @@ python manage.py flush
 
 ### shell
 python manage.py shell
+
+
+## NOTES:
+'django-settings-export' cannot be installed using pip3 with requirements.txt

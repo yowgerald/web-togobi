@@ -5,5 +5,3 @@ google-cloud-storage==1.30.0
 google-resumable-media==0.7.0
 six==1.13.0
 psycopg2==2.7.5
-facebook-business==8.0.0
-django-settings-export-1.2.1
