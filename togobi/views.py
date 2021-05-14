@@ -115,8 +115,13 @@ def content_bookmark(request):
 
 def get_contents(request):  # common
     if request.method == 'GET':
-        contents = Content.objects.filter(
-            target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
+        query = request.GET.get('q')
+        if query:
+            contents = Content.objects.filter(
+                title__icontains = query, target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
+        else:
+            contents = Content.objects.filter(
+                target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
         page = request.GET.get('page', 1)
         paginator = Paginator(contents, 20)
         contents = paginator.page(page)
@@ -134,10 +139,15 @@ def content_collection(request):
 # Manage own
 @login_required
 def own_contents(request):
-    contents = Content.objects.filter(
-        user_id = request.user.id).order_by('-created_at')
+    query = request.GET.get('q')
+    if query:
+        contents = Content.objects.filter(
+            title__icontains = query, user_id = request.user.id).order_by('-created_at')
+    else:
+        contents = Content.objects.filter(
+            user_id = request.user.id).order_by('-created_at')
     page = request.GET.get('page', 1)
-    paginator = Paginator(contents, 20)
+    paginator = Paginator(contents, 2)
     contents = paginator.page(page)
     return render(request, 'manage/own_contents.html', {
         'my_contents': contents,

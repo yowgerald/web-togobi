@@ -8,6 +8,7 @@
 	<!-- TODO: categorize content color? -->
 	<div class="row">
 		  <div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+			{% include 'parts/_content_search.html' %}
 			<a href="{% url 'content_add'%}" class="button ffab">Add Something</a>
   			<article>
 				{% for content in contents %}
@@ -56,7 +57,7 @@
 				{% if contents.has_other_pages %}
 					<ul class="pagination" role="navigation" aria-label="Pagination">
 						{% if contents.has_previous %}
-							<li><a href="?page={{ contents.previous_page_number }}">Previous <span class="show-for-sr">page</span></a></li>
+							<li><a href="?page={{ contents.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous <span class="show-for-sr">page</span></a></li>
 						{% else %}
 							<li class="disabled">Previous <span class="show-for-sr">page</span></li>
 						{% endif %}
@@ -64,11 +65,11 @@
 							{% if contents.number == i %}
 								<li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
 							{% else %}
-								<li><a href="?page={{ i }}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
+								<li><a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
 						  	{% endif %}
 						{% endfor %}
 						{% if contents.has_next %}
-							<li><a href="?page={{ contents.next_page_number }}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+							<li><a href="?page={{ contents.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
 						{% else %}
 						<li class="disabled">Next <span class="show-for-sr">page</span></li>
 						{% endif %}

@@ -6,6 +6,7 @@
 <script src="{% static 'frameworks/foundation/responsive-tables.js' %}"></script>
 <h3>My Contents</h3>
 <br/>
+{% include 'parts/_content_search.html' %}
 <table class="responsive">
     <thead>
         <tr>
@@ -35,7 +36,7 @@
 {% if my_contents.has_other_pages %}
 	<ul class="pagination" role="navigation" aria-label="Pagination">
 		{% if my_contents.has_previous %}
-			<li><a href="?page={{ my_contents.previous_page_number }}">Previous <span class="show-for-sr">page</span></a></li>
+			<li><a href="?page={{ my_contents.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous <span class="show-for-sr">page</span></a></li>
 		{% else %}
 			<li class="disabled">Previous <span class="show-for-sr">page</span></li>
 		{% endif %}
@@ -43,11 +44,11 @@
 			{% if my_contents.number == i %}
 				<li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
 			{% else %}
-				<li><a href="?page={{ i }}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
+				<li><a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
 		  	{% endif %}
 		{% endfor %}
 		{% if my_contents.has_next %}
-			<li><a href="?page={{ my_contents.next_page_number }}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+			<li><a href="?page={{ my_contents.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
 		{% else %}
 		<li class="disabled">Next <span class="show-for-sr">page</span></li>
 		{% endif %}
