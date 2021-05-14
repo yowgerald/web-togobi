@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Details{% endblock %}
 {% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'frameworks/foundation/responsive-tables.css' %}">
+<script src="{% static 'frameworks/foundation/responsive-tables.js' %}"></script>
 <h3>My Contents</h3>
 <br/>
-<table id="tbl_contents">
+<table class="responsive">
     <thead>
         <tr>
           <th width="25%">Title</th>
