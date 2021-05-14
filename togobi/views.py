@@ -10,7 +10,6 @@ from django.db.models import Count
 from django.db.models import TextField
 from django.db.models.functions import Concat
 from pathlib import Path
-from pymediainfo import MediaInfo
 
 from togobi.forms import ContentAddForm, ContentFileAddForm
 from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin

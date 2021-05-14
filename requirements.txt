@@ -7,5 +7,3 @@ six==1.13.0
 psycopg2==2.7.5
 facebook-business==8.0.0
 django-settings-export-1.2.1
-pymediainfo-5.0.3
-Pillow-8.1.0
