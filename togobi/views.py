@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -46,7 +46,7 @@ def content_list(request):
 
 def content_details(request, id):
     if request.method == 'GET':
-        content = Content.objects.get(id=id)
+        content = get_object_or_404(Content, id=id)
     return render(request, 'content_details.html', {'content': content})
 
 
@@ -75,7 +75,7 @@ def content_add(request):
 @login_required
 def content_join(request, id):
     if request.method == 'GET':
-        content = Content.objects.get(id=id)
+        content = get_object_or_404(Content, id=id)
         content_join = ContentJoin.objects.filter(
             user=request.user, content=content
         ).first()
@@ -155,7 +155,7 @@ def own_contents(request):
 
 @login_required
 def own_content_edit(request, id):
-    content = Content.objects.get(id=id)
+    content = get_object_or_404(Content, id=id)
     content_form = ContentAddForm(request.POST or None, instance = content)
     if request.method == 'POST':
         if content_form.is_valid():
@@ -167,7 +167,7 @@ def own_content_edit(request, id):
 
 @login_required
 def own_content_delete(request, id):
-    content = Content.objects.get(id=id)
+    content = get_object_or_404(Content, id=id)
     return render(request, 'manage/own_content_delete.html', {
         'content': content
     })
