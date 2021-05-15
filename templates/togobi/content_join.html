@@ -2,8 +2,9 @@
 {% block title %}Join Payment{% endblock %}
 {% block content %}
 <h3>Payments</h3>
+Coming Soon
 <br/>
-<form method="post" action="{% url 'content_join' content.id }">
+<form method="post" action="{% url 'content_join' content.id %}">
 	{% csrf_token %}
 	<input type="hidden" name="content" value="{{ content.id }}">
 	<button type="submit" class="button paymaya">Continue</button>
