@@ -147,8 +147,27 @@ def own_contents(request):
         contents = Content.objects.filter(
             user_id = request.user.id).order_by('-created_at')
     page = request.GET.get('page', 1)
-    paginator = Paginator(contents, 2)
+    paginator = Paginator(contents, 20)
     contents = paginator.page(page)
     return render(request, 'manage/own_contents.html', {
         'my_contents': contents,
+    })
+
+@login_required
+def own_content_edit(request, id):
+    content = Content.objects.get(id=id)
+    content_form = ContentAddForm(request.POST or None, instance = content)
+    if request.method == 'POST':
+        if content_form.is_valid():
+            content_form.save()
+    return render(request, 'manage/own_content_edit.html', {
+        'content_form': content_form,
+        'content': content
+    })
+
+@login_required
+def own_content_delete(request, id):
+    content = Content.objects.get(id=id)
+    return render(request, 'manage/own_content_delete.html', {
+        'content': content
     })

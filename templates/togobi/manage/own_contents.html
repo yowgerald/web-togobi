@@ -10,13 +10,14 @@
 <table class="responsive">
     <thead>
         <tr>
-          <th width="25%">Title</th>
-          <th width="30%">Description</th>
+          <th width="15%">Title</th>
+          <th width="35%">Description</th>
           <th>Target Date</th>
           <th>Status</th>
           <th>Created Date</th>
           <th>Edit</th>
           <th>Delete</th>
+          <th>Copy Link</th>
         </tr>
       </thead>
       <tbody>
@@ -27,8 +28,9 @@
             <td> {{ content.target_date }} </td>
             <td> {{ content.is_active }} </td>
             <td> {{ content.created_at }} </td>
-            <td> Edit </td>
-            <td> Delete </td>
+            <td> <a href="{% url 'own_content_edit' content.id %}">Edit</a> </td>
+            <td> <a href="{% url 'own_content_delete' content.id %}">Delete</a> </td>
+            <td> Copy </td>
         </tr>
         {% endfor %} 
       </tbody>
