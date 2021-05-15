@@ -26,11 +26,7 @@
 							{% endfor %}
 						</div>
 						<div class="large-6 columns">
-							<form id="form-details{{content.id}}" method="get" action="{% url 'content_details' %}">
-								{% csrf_token %}
-								<input type="hidden" name="content" value="{{ content.id }}">
-								<h5><a href="#" onclick="document.forms['form-details{{content.id}}'].submit();">{{content.title}}</a></h5>
-							</form>
+							<h5><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h5>
 							<p>
 							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
 							<br/>
@@ -40,11 +36,7 @@
 							</p>
 							<p>{{ content.description }}</p>
 							<div class="small secondary expanded button-group">
-								<form id="form-join{{content.id}}" method="get" action="{% url 'content_join' %}">
-									{% csrf_token %}
-									<input type="hidden" name="content" value="{{ content.id }}">
-								</form>
-								<a href="#" onclick="document.forms['form-join{{content.id}}'].submit();" class="button">Join</a>
+								<a href="{% url 'content_join' content.id %}" class="button">Join</a>
 								<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
 								<a class="button">Share</a>
 							  </div>

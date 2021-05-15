@@ -44,9 +44,9 @@ def content_list(request):
         })
 
 
-def content_details(request):
+def content_details(request, id):
     if request.method == 'GET':
-        content = Content.objects.get(id=request.GET.get("content"))
+        content = Content.objects.get(id=id)
     return render(request, 'content_details.html', {'content': content})
 
 
@@ -59,23 +59,23 @@ def content_add(request):
             content = content_form.save(commit=False)
             content.user = request.user
             content.save()
-            return render(request, 'content_details.html', {'content': content})
+            return redirect('content_details', id=content.id)
         else:
             print('not valid')
     else:
         content_form = ContentAddForm(initial={})
     # TODO: catch exception, saying internet speed is not good for uploading
-    context = {
-        'content_form': content_form,
-        'content_file_form': ContentFileAddForm(initial={}),
-    }
-    return render(request, 'content_add.html', context)
+        context = {
+            'content_form': content_form,
+            'content_file_form': ContentFileAddForm(initial={}),
+        }
+        return render(request, 'content_add.html', context)
 
 
 @login_required
-def content_join(request):
+def content_join(request, id):
     if request.method == 'GET':
-        content = Content.objects.get(id=request.GET.get("content"))
+        content = Content.objects.get(id=id)
         content_join = ContentJoin.objects.filter(
             user=request.user, content=content
         ).first()
@@ -85,7 +85,7 @@ def content_join(request):
         else:
             return render(request, 'content_ticket_lost.html', {'content': content})
     else:
-        content = Content.objects.get(id=request.POST.get("content"))
+        content = Content.objects.get(id=id)
 
         content_join = ContentJoin()
         content_join.user = request.user
