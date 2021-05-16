@@ -11,7 +11,7 @@ from django.db.models import TextField
 from django.db.models.functions import Concat
 from pathlib import Path
 
-from togobi.forms import ContentAddForm, ContentFileAddForm
+from togobi.forms import ContentForm, ContentFileForm
 from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin
 from togobi.serializers import ContentSerializer
 
@@ -53,7 +53,7 @@ def content_details(request, id):
 @login_required
 def content_add(request):
     if request.method == 'POST':
-        content_form = ContentAddForm(request.POST)
+        content_form = ContentForm(request.POST)
         if content_form.is_valid():
             # TODO: file upload
             content = content_form.save(commit=False)
@@ -63,11 +63,11 @@ def content_add(request):
         else:
             print('not valid')
     else:
-        content_form = ContentAddForm(initial={})
+        content_form = ContentForm(initial={})
     # TODO: catch exception, saying internet speed is not good for uploading
         context = {
             'content_form': content_form,
-            'content_file_form': ContentFileAddForm(initial={}),
+            'content_file_form': ContentFileForm(initial={}),
         }
         return render(request, 'content_add.html', context)
 
@@ -156,14 +156,16 @@ def own_contents(request):
 @login_required
 def own_content_edit(request, id):
     content = get_object_or_404(Content, id=id)
-    content_form = ContentAddForm(request.POST or None, instance = content)
+    content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
     if request.method == 'POST':
         if content_form.is_valid():
             content_form.save()
-    return render(request, 'manage/own_content_edit.html', {
-        'content_form': content_form,
-        'content': content
-    })
+        return redirect('own_contents')
+    else:
+        return render(request, 'manage/own_content_edit.html', {
+            'content_form': content_form,
+            'content': content
+        })
 
 @login_required
 def own_content_delete(request, id):

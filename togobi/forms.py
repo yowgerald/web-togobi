@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 class FileInput(forms.FileInput):
     input_type = 'file'
 
-class ContentAddForm(ModelForm):
+class ContentForm(ModelForm):
     class Meta:
         model = Content
         fields = (
@@ -16,14 +16,23 @@ class ContentAddForm(ModelForm):
             "description",
             "tags",
             "target_date",
+            "is_active"
             )
         widgets = {
             'target_date': DateInput(),
         }
-
-class ContentFileAddForm(ModelForm):
+        labels = {
+            "is_active": "status"
+        }
     def __init__(self, *args, **kwargs):
-        super(ContentFileAddForm, self).__init__(*args, **kwargs)
+        edit_check = kwargs.pop('edit_check', False)
+        super(ContentForm, self).__init__(*args, **kwargs)
+        if not edit_check:
+            del self.fields['is_active']
+
+class ContentFileForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ContentFileForm, self).__init__(*args, **kwargs)
         self.fields['source'].required = False
 
     class Meta:
