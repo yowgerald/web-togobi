@@ -14,10 +14,9 @@
           <th width="35%">Description</th>
           <th>Target Date</th>
           <th>Status</th>
-          <th>Created Date</th>
           <th>Edit</th>
-          <th>Delete</th>
-          <th>Copy Link</th>
+          <th>Attendees Count</th>
+          <th>View More</th>
         </tr>
       </thead>
       <tbody>
@@ -26,11 +25,18 @@
             <td> {{ content.title }} </td>
             <td> {{ content.description }} </td>
             <td> {{ content.target_date }} </td>
-            <td> {{ content.is_active }} </td>
-            <td> {{ content.created_at }} </td>
+            {% if content.is_active %}
+            <td> active </td>
+            {% else %}
+            <td> stopped </td>
+            {% endif %}
             <td> <a href="{% url 'own_content_edit' content.id %}">Edit</a> </td>
-            <td> <a href="{% url 'own_content_delete' content.id %}">Delete</a> </td>
-            <td> Copy </td>
+            {% if content.total_attendees is not None %}
+              <td>{{ content.total_attendees }}</td>
+            {% else %}
+              <td>0</td>
+            {% endif %}
+            <td><a href="{% url 'own_content_details' content.id %}">View</a></td>
         </tr>
         {% endfor %} 
       </tbody>

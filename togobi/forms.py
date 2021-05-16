@@ -22,7 +22,7 @@ class ContentForm(ModelForm):
             'target_date': DateInput(),
         }
         labels = {
-            "is_active": "status"
+            "is_active": "Active"
         }
     def __init__(self, *args, **kwargs):
         edit_check = kwargs.pop('edit_check', False)

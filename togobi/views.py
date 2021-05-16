@@ -173,3 +173,10 @@ def own_content_delete(request, id):
     return render(request, 'manage/own_content_delete.html', {
         'content': content
     })
+
+@login_required
+def own_content_details(request, id):
+    content = get_object_or_404(Content, id=id)
+    return render(request, 'manage/own_content_details.html', {
+        'content': content
+    })
