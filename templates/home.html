@@ -2,74 +2,62 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 	{# START #}
-	<div class="row column">
-  		<h4 style="margin: 0;" class="text-center">LATEST</h4>
-	</div>
 	<!-- TODO: categorize content color? -->
 	<div class="row">
-		  <div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+		<div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+			<div class="row column">
+				<h4 style="margin: 0;" class="text-center">LATEST</h4>
+		  	</div>
 			{% include 'parts/_content_search.html' %}
 			<a href="{% url 'content_add'%}" class="button ffab">Add Something</a>
-  			<article>
-				{% for content in contents %}
-					<div class="row">
-						<div class="large-6 columns">
-							{% for file in content.contentfile_set.all %}
-							<p>{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image">
-								{% elif file.f_type == 'Video'%}
-								<!-- TODO: may need to add 3rd party player for playing -->
-									<video src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="video for article" alt="article preview video" class="home-video">
-								{% endif%}</p>
-								{% empty %}
-								<!-- TODO: show system generated image from title -->
-							{% endfor %}
-						</div>
-						<div class="large-6 columns">
-							<h5><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h5>
-							<p>
+			<div class="row medium-unstack">
+			{% for content in contents %}
+				<div class="column medium-6">
+					<div class="card">
+					  <img src="https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg">
+					  <div class="card-section">
+						<h4><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h4>
+						<p>
+							<span>{{ content.description }}oidhfjhdhdsflsd sdfhshfjsfh sdfjskhfsf sdfj khdfsdfh sdkjfhk dhgds hfsdfsfssfdfgsgfsgsfgsgsgd</span>
+							<br/>
 							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
 							<br/>
 							<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
 							<br/>
 							<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
-							</p>
-							<p>{{ content.description }}</p>
-							<div class="small secondary expanded button-group">
-								<a href="{% url 'content_join' content.id %}" class="button">Join</a>
-								<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
-								<a class="button">Share</a>
-							  </div>
+						</p>
+						<div class="small secondary expanded button-group">
+							<a href="{% url 'content_join' content.id %}" class="button">Join</a>
+							<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
+							<a class="button">Share</a>
 						</div>
+					  </div>
 					</div>
-					{% if not forloop.last %}
-						<hr>
-					{% endif %}
-				{% endfor %}
-				{% if contents.has_other_pages %}
-					<ul class="pagination" role="navigation" aria-label="Pagination">
-						{% if contents.has_previous %}
-							<li><a href="?page={{ contents.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous <span class="show-for-sr">page</span></a></li>
-						{% else %}
-							<li class="disabled">Previous <span class="show-for-sr">page</span></li>
-						{% endif %}
-						{% for i in contents.paginator.page_range %}
-							{% if contents.number == i %}
-								<li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
-							{% else %}
-								<li><a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
-						  	{% endif %}
-						{% endfor %}
-						{% if contents.has_next %}
-							<li><a href="?page={{ contents.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
-						{% else %}
-						<li class="disabled">Next <span class="show-for-sr">page</span></li>
-						{% endif %}
-					</ul>
-				{% endif %}
-			</article>
-  		</div>
-
+				</div>
+			{% endfor %}
+			</div>
+			{% if contents.has_other_pages %}
+            <ul class="pagination" role="navigation" aria-label="Pagination">
+                {% if contents.has_previous %}
+                    <li><a href="?page={{ contents.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous <span class="show-for-sr">page</span></a></li>
+                {% else %}
+                    <li class="disabled">Previous <span class="show-for-sr">page</span></li>
+                {% endif %}
+                {% for i in contents.paginator.page_range %}
+                    {% if contents.number == i %}
+                        <li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
+                    {% else %}
+                        <li><a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
+                      {% endif %}
+                {% endfor %}
+                {% if contents.has_next %}
+                    <li><a href="?page={{ contents.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
+                {% else %}
+                <li class="disabled">Next <span class="show-for-sr">page</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+		</div>
   		<div class="large-4 columns">
 			  <!-- TODO: adjust the combination of the media and title -->
   			<aside>
@@ -121,32 +109,6 @@
 						No items available yet.
 					{% endfor %} 
 				  </div>
-				  {% if user.is_authenticated %}
-				  <hr>
-				  <div class="row column">
-					<p class="lead">BOOKMARKS</p>
-					{% for bookmark in contents_bookmark %}
-						<div class="media-object">
-						  <div class="media-object-section">
-							{% for file in content.contentfile_set.all %}
-								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
-								{% elif file.f_type == 'Video'%}
-								<!-- TODO: need to generate gif from video -->
-								{% endif%}
-								{% empty %}
-								<!-- TODO: show system generated image from title -->
-							{% endfor %}
-						  </div>
-						  <div class="media-object-section">
-							<h5>{{ bookmark.content.title }}</h5>
-						  </div>
-						</div>
-					{% empty %}
-						No items available yet.
-					{% endfor %} 
-				  </div>
-				  {% endif %}
       		</aside>
   		</div>
 	</div>

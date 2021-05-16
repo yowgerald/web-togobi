@@ -19,7 +19,11 @@
               <ul class="dropdown menu" data-dropdown-menu>
                 <li class="menu-text"><img src="{% static 'togobi-logo.png' %}" width="112" height="28"></li>
                 <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'own_contents' %}">My Contents</a></li>
+                {% if user.is_authenticated %}
+                  <li><a href="#">Bookmarks</a></li>
+                  <li><a href="#">Notifs</a></li>
+                  <li><a href="{% url 'own_contents' %}">Manage</a></li>
+                {% endif %}
                 <li><a href="#">Services</a></li>
                 <li><a href="#">Help</a></li>
               </ul>
