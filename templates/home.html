@@ -4,38 +4,34 @@
 	{# START #}
 	<!-- TODO: categorize content color? -->
 	<div class="row">
-		<div class="large-8 columns" style="border-right: 1px solid #E3E5E8;">
+		<div class="large-6 columns" style="border-right: 1px solid #E3E5E8;">
 			<div class="row column">
 				<h4 style="margin: 0;" class="text-center">LATEST</h4>
 		  	</div>
 			{% include 'parts/_content_search.html' %}
 			<a href="{% url 'content_add'%}" class="button ffab">Add Something</a>
-			<div class="row medium-unstack">
 			{% for content in contents %}
-				<div class="column medium-6">
-					<div class="card">
-					  <img src="https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg">
-					  <div class="card-section">
-						<h4><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h4>
-						<p>
-							<span>{{ content.description }}oidhfjhdhdsflsd sdfhshfjsfh sdfjskhfsf sdfj khdfsdfh sdkjfhk dhgds hfsdfsfssfdfgsgfsgsfgsgsgd</span>
-							<br/>
-							<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
-							<br/>
-							<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
-							<br/>
-							<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
-						</p>
-						<div class="small secondary expanded button-group">
-							<a href="{% url 'content_join' content.id %}" class="button">Join</a>
-							<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
-							<a class="button">Share</a>
-						</div>
-					  </div>
+				<div class="card">
+				  <img src="https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg">
+				  <div class="card-section">
+					<h4><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h4>
+					<p>
+						<span>{{ content.description }}</span>
+						<br/>
+						<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
+						<br/>
+						<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
+						<br/>
+						<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
+					</p>
+					<div class="small secondary button-group">
+						<a href="{% url 'content_join' content.id %}" class="button">Join</a>
+						<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
+						<a class="button">Share</a>
 					</div>
+				  </div>
 				</div>
 			{% endfor %}
-			</div>
 			{% if contents.has_other_pages %}
             <ul class="pagination" role="navigation" aria-label="Pagination">
                 {% if contents.has_previous %}
@@ -58,7 +54,7 @@
             </ul>
         {% endif %}
 		</div>
-  		<div class="large-4 columns">
+  		<div class="large-6 columns">
 			  <!-- TODO: adjust the combination of the media and title -->
   			<aside>
 				  <br>
