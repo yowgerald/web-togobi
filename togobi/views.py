@@ -157,3 +157,17 @@ def own_content_details(request, id):
     return render(request, 'manage/own_content_details.html', {
         'content': content
     })
+
+@login_required
+def notifs(request):
+    system = []
+    messages = []
+    ntabs = ['cont', 'msg', 'anncmnt']
+    ntab = request.GET.get('ntab')
+    if ntab not in ntabs:
+        ntab = None
+    return render(request, 'notifs/tab.html', {
+        'system': system,
+        'messages': messages,
+        'ntab': ntab
+    })
