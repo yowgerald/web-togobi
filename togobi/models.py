@@ -40,10 +40,6 @@ class ContentFile(models.Model):
     f_type = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=False)
 
-class ContentBookmark(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    content = models.ForeignKey(Content, on_delete=models.CASCADE)
-
 class ContentJoin(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     content = models.ForeignKey(Content, on_delete=models.CASCADE)

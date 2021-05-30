@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 from pathlib import Path
 
 from togobi.forms import ContentForm, ContentFileForm
-from togobi.models import Content, ContentFile, ContentBookmark, ContentJoin
+from togobi.models import Content, ContentFile, ContentJoin
 from togobi.serializers import ContentSerializer
 
 from google.auth.transport.requests import AuthorizedSession
@@ -30,17 +30,12 @@ def content_list(request):
     contents = get_contents(request)
     contents_today = Content.objects.filter(
             target_date__day=date.today().day).order_by('-target_date')
-    contents_bookmark = []
     contents_top = ContentJoin.objects.annotate(distinct_name=Concat(
         'content_id', 'content_id', output_field=TextField())).order_by('distinct_name').distinct('distinct_name')
-    if request.user.is_authenticated:
-        contents_bookmark = ContentBookmark.objects.filter(
-            user = request.user, content__target_date__gt=time_threshold).order_by('-content__target_date')
     return render(request, 'home.html', {
         'contents': contents,
         'contents_today' : contents_today,
         'contents_top' : contents_top,
-        'contents_bookmark' : contents_bookmark
         })
 
 
@@ -94,24 +89,6 @@ def content_join(request, id):
         content_join.status = 1 # status pending
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
-
-
-def content_bookmark(request):
-    content = Content.objects.get(id=request.POST.get("content"))
-    user = User.objects.get(id=request.POST.get("user"))
-    if content and user:
-        content_bookmark = ContentBookmark.objects.filter(
-            content=content, user=user
-        ).first()
-        if not content_bookmark:
-            content_bookmark = ContentBookmark()
-            content_bookmark.content = content
-            content_bookmark.user = user
-            content_bookmark.save()
-            return JsonResponse({'success': 'true'})
-
-    return JsonResponse({'success': 'false'})
-
 
 def get_contents(request):  # common
     if request.method == 'GET':

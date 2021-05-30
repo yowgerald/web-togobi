@@ -26,7 +26,6 @@
 					</p>
 					<div class="small secondary button-group">
 						<a href="{% url 'content_join' content.id %}" class="button">Join</a>
-						<a class="button" name="bookmark-content" data-id="{{ content.id }}">Bookmark</a>
 						<a class="button">Share</a>
 					</div>
 				  </div>
@@ -109,25 +108,4 @@
   		</div>
 	</div>
 {% load static %}
-{% block javascript %}
-  <script>
-	var token = '{{csrf_token}}';
-	$(document).on("click", "[name='bookmark-content']", function() {
-		$.ajax({
-			headers: { "X-CSRFToken": token },
-    	    url: "/content/bookmark",
-    	    data: {
-				content : $(this).data('id'),
-				user: "{{ user.id }}"
-			},
-			method: "post",
-    	    dataType: 'json',
-    	    success: function (data) {
-				// TODO: update the bookmark part using js
-				console.log(data)
-    	    }
-    	});
-	})
-  </script>
-{% endblock %}
 {% endblock %}
