@@ -6,9 +6,9 @@
     <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
-  <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
-  <link rel="stylesheet" href="{% static 'frameworks/foundation/motion-ui.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frameworks/foundation/motion-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
 </head>
   <body>
@@ -20,7 +20,7 @@
                 <li class="menu-text"><img src="{% static 'togobi-logo.png' %}" width="112" height="28"></li>
                 <li><a href="{% url 'home' %}">Home</a></li>
                 {% if user.is_authenticated %}
-                  <li><a href="#">Notifs</a></li>
+                  <li><a href="{% url 'notifs' %}">Notifs</a></li>
                   <li><a href="{% url 'own_contents' %}">Manage</a></li>
                 {% endif %}
               </ul>
@@ -28,7 +28,6 @@
     	    <div class="top-bar-right">
     		    <ul class="menu">
               <li><a href="#">Services</a></li>
-              <li><a href="#">Help</a></li>
     		    	{% if user.is_authenticated %}
     		    		<li><a href="{% url 'logout' %}">Logout</a></li>
     		    	{% else %}
@@ -49,21 +48,22 @@
       <div class="row expanded callout secondary">
       <div class="medium-6 columns">
           <ul class="menu">
+            <li><a href="#">Help</a></li>
             <li><a href="#">Legal</a></li>
             <li><a href="#">Partner</a></li>
-            <li><a href="#">Explore</a></li>
           </ul>
         </div>
       
         <div class="medium-6 columns">
           <ul class="menu align-right">
-            <li class="menu-text">Copyright © 2020 Togobi</li>
+            <li class="menu-text">Copyright © 2021 Togobi</li>
           </ul>
         </div>
       </div>
     </footer>
   </body>
-    <script src="{% static 'frameworks/foundation/foundation.js' %}"></script>
+   <script src="{% static 'frameworks/foundation/foundation.js' %}"></script>
+   <script src="{% static 'js/sticky_footer.js' %}"></script>
 </html>
 
 {# TODO: change frameworks source to prod version in deployment #}

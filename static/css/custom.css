@@ -1,6 +1,7 @@
 @charset "UTF-8";
 body, .top-bar, .top-bar ul {
     background-color: #FFFFFF;
+	height: auto;
 }
 
 .top-bar {
@@ -21,4 +22,9 @@ body, .top-bar, .top-bar ul {
 
 .home-image-small {
 	width: 65%;
+}
+
+/* TODO: remove border-top in mobile */
+.tabs-content {
+	border-top: 1px solid #e6e6e6;
 }
