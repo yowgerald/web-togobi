@@ -48,6 +48,18 @@ class ContentJoin(models.Model):
     application_date = models.DateTimeField('date applied')
     accepted_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='content_author')
     accepted_date = models.DateTimeField('date accepted', null=True)
+
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    text = models.TextField()
+    m_type = models.CharField(max_length=50, null=True)
+    status = models.IntegerField()
+    sent_date = models.DateTimeField('date sent', null=True)
+
+class MessageReceiver(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, null=True)
+
     
 # TODO: add content_fb
 # TODO: add content_sms
