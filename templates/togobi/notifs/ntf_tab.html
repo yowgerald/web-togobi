@@ -5,11 +5,8 @@
   <div class="row collapse">
     <div class="medium-2 columns">
       <ul class="vertical tabs">
-            <li class="tabs-title {% if ntab == 'cont' or not ntab  %} is-active {% endif %}">
-                <a href="?ntab=cont" {% if ntab == 'cont' or not ntab %} aria-selected="true" {% endif %}>Content</a>
-            </li>
-            <li class="tabs-title {% if ntab == 'msg' %} is-active {% endif %}">
-                <a href="?ntab=msg" {% if ntab == 'msg' %} aria-selected="true" {% endif %}>Messages</a>
+            <li class="tabs-title {% if ntab == 'msg' or not ntab %} is-active {% endif %}">
+                <a href="?ntab=msg" {% if ntab == 'msg' or not ntab %} aria-selected="true" {% endif %}>Messages</a>
             </li>
             <li class="tabs-title {% if ntab == 'anncmnt' %} is-active {% endif %}">
                 <a href="?ntab=anncmnt" {% if ntab == 'anncmnt' %} aria-selected="true" {% endif %}>Togobi</a>
@@ -19,12 +16,10 @@
     <div class="medium-9 columns">
       <div class="tabs-content">
         <div class="tabs-panel is-active">
-            {% if ntab == 'msg'%}
-                {% include 'notifs/ntf_message.html' %}
-            {% elif ntab == 'anncmnt' %}
+            {% if ntab == 'anncmnt'%}
                 {% include 'notifs/ntf_togobi.html' %}
             {% else %}
-                {% include 'notifs/ntf_content.html' %}
+                {% include 'notifs/ntf_message.html' %}
             {% endif %}
         </div>
       </div>

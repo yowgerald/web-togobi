@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Own Content Details{% endblock %}
+{% block content %}
+<h3>Own Content Details</h3>
+  <div class="row collapse">
+    <div class="medium-2 columns">
+      <ul class="vertical tabs">
+          <li class="tabs-title {% if dtab == 'prim' or not dtab %} is-active {% endif %}">
+              <a href="?dtab=prim" {% if dtab == 'prim' or not dtab %} aria-selected="true" {% endif %}>Primary</a>
+          </li>
+          <li class="tabs-title {% if dtab == 'attnds' %} is-active {% endif %}">
+              <a href="?dtab=attnds" {% if dtab == 'attnds' %} aria-selected="true" {% endif %}>Attendees</a>
+          </li>
+      </ul>
+    </div>
+    <div class="medium-9 columns">
+      <div class="tabs-content">
+        <div class="tabs-panel is-active">
+          {% if dtab == 'attnds'%}
+            {% include 'manage/details/dets_attendees.html' %}
+          {% else %}
+            {% include 'manage/details/dets_primary.html' %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

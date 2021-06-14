@@ -153,20 +153,25 @@ def own_content_delete(request, id):
 
 @login_required
 def own_content_details(request, id):
+    dtabs = ['prim', 'attnds']
+    dtab = request.GET.get('dtab')
+    if dtab not in dtabs:
+        dtab = None
     content = get_object_or_404(Content, id=id)
-    return render(request, 'manage/own_content_details.html', {
-        'content': content
+    return render(request, 'manage/details/dets_tab.html', {
+        'content': content,
+        'dtab': dtab
     })
 
 @login_required
 def notifs(request):
     system = []
     messages = []
-    ntabs = ['cont', 'msg', 'anncmnt']
+    ntabs = ['msg', 'anncmnt']
     ntab = request.GET.get('ntab')
     if ntab not in ntabs:
         ntab = None
-    return render(request, 'notifs/tab.html', {
+    return render(request, 'notifs/ntf_tab.html', {
         'system': system,
         'messages': messages,
         'ntab': ntab
