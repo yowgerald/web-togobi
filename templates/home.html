@@ -24,10 +24,7 @@
 						<br/>
 						<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
 					</p>
-					<div class="small secondary button-group">
-						<a href="{% url 'content_join' content.id %}" class="button">Join</a>
-						<a class="button">Share</a>
-					</div>
+						<a href="{% url 'content_join' content.id %}" class="button small expanded">Join</a>
 				  </div>
 				</div>
 			{% endfor %}

@@ -1,8 +1,10 @@
 <form method="GET" action="">
-    <div class="input-group">
-      <input class="input-group-field" name="q" type="text" value="{{ request.GET.q }}">
-      <div class="input-group-button">
-        <input type="submit" class="button" value="Search">
-      </div>
+  <div class="row">
+    <div class="small-9 columns">
+      <input name="q" type="text" value="{{ request.GET.q }}">
     </div>
-  </form>
+    <div class="small-3 columns">
+      <input type="submit" class="button expanded" value="Search">
+    </div>
+  </div> 
+</form>

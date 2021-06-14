@@ -6,37 +6,31 @@
     <title>Togobi &bull; {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
-    <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation.min.css' %}">
-    <link rel="stylesheet" href="{% static 'frameworks/foundation/motion-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation-float.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation-prototype.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frameworks/foundation/foundation-rtl.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-
 </head>
   <body>
     <div class="main">
     	<div class="top-bar">
-          <div class="row">
-            <div class="top-bar-left">
-              <ul class="dropdown menu" data-dropdown-menu>
+        <div class="top-bar-left">
+              <ul class="menu">
                 <li class="menu-text"><img src="{% static 'togobi-logo.png' %}" width="112" height="28"></li>
                 <li><a href="{% url 'home' %}">Home</a></li>
                 {% if user.is_authenticated %}
                   <li><a href="{% url 'notifs' %}">Notifs</a></li>
                   <li><a href="{% url 'own_contents' %}">Manage</a></li>
                 {% endif %}
+                <li><a href="#">Services</a></li>
+                {% if user.is_authenticated %}
+    		    	  	<li><a href="{% url 'logout' %}">Logout</a></li>
+    		    	  {% else %}
+    		    	  	<li><a href="{% url 'signup' %}">Sign up</a></li>
+    			      	<li><a href="{% url 'login' %}">Login</a></li>
+    		    	  {% endif %}
               </ul>
-            </div>
-    	    <div class="top-bar-right">
-    		    <ul class="menu">
-              <li><a href="#">Services</a></li>
-    		    	{% if user.is_authenticated %}
-    		    		<li><a href="{% url 'logout' %}">Logout</a></li>
-    		    	{% else %}
-    		    		<li><a href="{% url 'signup' %}">Sign up</a></li>
-    			    	<li><a href="{% url 'login' %}" class="button">Login</a></li>
-    		    	{% endif %}
-    		    </ul>
-    	  	</div>
-          </div>
+        </div>
       </div>
       <div class="row column">
           <script src="{% static 'frameworks/jquery-2.1.4.min.js' %}"></script>
@@ -62,8 +56,8 @@
       </div>
     </footer>
   </body>
-   <script src="{% static 'frameworks/foundation/foundation.js' %}"></script>
-   <script src="{% static 'js/sticky_footer.js' %}"></script>
+  <script src="{% static 'frameworks/foundation/foundation.min.js' %}"></script>
+  <script src="{% static 'js/sticky_footer.js' %}"></script>
 </html>
 
 {# TODO: change frameworks source to prod version in deployment #}
