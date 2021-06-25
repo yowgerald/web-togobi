@@ -19,6 +19,7 @@ from togobi.serializers import ContentSerializer
 from google.auth.transport.requests import AuthorizedSession
 from google.resumable_media.requests import ResumableUpload
 import io
+import os
 from google.cloud import storage
 
 from rest_framework.response import Response
@@ -100,7 +101,6 @@ def contentfile_upload(request):
     if (file):
         fileInfo = MediaInfo.parse(file)
         f_type = False
-        # TODO: need to check the file size of the video, allowed size is 10mb of free users?
         for track in fileInfo.tracks:
             if track.track_type == "Image":
                 f_type = track.track_type
@@ -109,11 +109,14 @@ def contentfile_upload(request):
     if (f_type):
         file.open()
         data = file.read()
+        file.seek(0, os.SEEK_END)
+        fsize = file.tell()
+        # TODO: need to check the file size of the video, allowed size is 10mb of free users?
         file.close()
         url_template = (
             u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
         upload_url = url_template.format(bucket=bucket)
-        chunk_size = 1024 * 1024  # 1MB
+        chunk_size = 1024 * 1024  # 1MB or 256 x 1024 bytes (256 KB)
         upload = ResumableUpload(upload_url, chunk_size)
         stream = io.BytesIO(data)
         ext = Path(file.name).suffix
@@ -121,7 +124,8 @@ def contentfile_upload(request):
         metadata = {u'name': filename, }
         content_type = u'image/png'
         response = upload.initiate(transport, stream, metadata, content_type)
-        response0 = upload.transmit_next_chunk(transport)
+        while not upload.finished:
+            upload.transmit_next_chunk(transport)
         return JsonResponse({'status':'success'}, status=200, safe=False)
 
     return JsonResponse({'status':'failed'}, status=400, safe=False)
