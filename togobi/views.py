@@ -10,13 +10,15 @@ from django.db.models import Count
 from django.db.models import TextField
 from django.db.models.functions import Concat
 from pathlib import Path
+from pymediainfo import MediaInfo
 
 from togobi.forms import ContentForm, ContentFileForm
 from togobi.models import Content, ContentFile, ContentJoin
 from togobi.serializers import ContentSerializer
 
 from google.auth.transport.requests import AuthorizedSession
-from google.resumable_media.requests import MultipartUpload
+from google.resumable_media.requests import ResumableUpload
+import io
 from google.cloud import storage
 
 from rest_framework.response import Response
@@ -50,7 +52,6 @@ def content_add(request):
     if request.method == 'POST':
         content_form = ContentForm(request.POST)
         if content_form.is_valid():
-            # TODO: file upload
             content = content_form.save(commit=False)
             content.user = request.user
             content.save()
@@ -90,6 +91,41 @@ def content_join(request, id):
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
 
+@login_required
+def contentfile_upload(request):
+    storage_client = storage.Client()
+    transport = AuthorizedSession(credentials=storage_client._credentials)
+    bucket = settings.GCP_BUCKET_NAME
+    file = request.FILES.get('file', False)
+    if (file):
+        fileInfo = MediaInfo.parse(file)
+        f_type = False
+        # TODO: need to check the file size of the video, allowed size is 10mb of free users?
+        for track in fileInfo.tracks:
+            if track.track_type == "Image":
+                f_type = track.track_type
+            elif track.track_type == "Video":
+                f_type = track.track_type
+    if (f_type):
+        file.open()
+        data = file.read()
+        file.close()
+        url_template = (
+            u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
+        upload_url = url_template.format(bucket=bucket)
+        chunk_size = 1024 * 1024  # 1MB
+        upload = ResumableUpload(upload_url, chunk_size)
+        stream = io.BytesIO(data)
+        ext = Path(file.name).suffix
+        filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
+        metadata = {u'name': filename, }
+        content_type = u'image/png'
+        response = upload.initiate(transport, stream, metadata, content_type)
+        response0 = upload.transmit_next_chunk(transport)
+        return JsonResponse({'status':'success'}, status=200, safe=False)
+
+    return JsonResponse({'status':'failed'}, status=400, safe=False)
+
 def get_contents(request):  # common
     if request.method == 'GET':
         query = request.GET.get('q')
@@ -119,10 +155,10 @@ def own_contents(request):
     query = request.GET.get('q')
     if query:
         contents = Content.objects.filter(
-            title__icontains = query, user_id = request.user.id).order_by('-created_at')
+            title__icontains = query, user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
     else:
         contents = Content.objects.filter(
-            user_id = request.user.id).order_by('-created_at')
+            user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
     page = request.GET.get('page', 1)
     paginator = Paginator(contents, 20)
     contents = paginator.page(page)

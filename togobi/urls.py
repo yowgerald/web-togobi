@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('', views.content_list, name='home'),
     path('content/add', views.content_add, name='content_add'),
+    path('contentfile/upload', views.contentfile_upload, name='contentfile_upload'),
     path('content/<int:id>/details', views.content_details, name='content_details'),
     path('content/<int:id>/join', views.content_join, name='content_join'),
     path('manage/contents', views.own_contents, name='own_contents'),
