@@ -2,7 +2,6 @@
 {% block title %}Add content{% endblock %}
 {% block content %}
 {% load static %}
-    <link rel="stylesheet" href="{% static 'frameworks/dropzone/dropzone.min.css' %}">
     <h3>Add content</h3>
     <form method="post" action="{% url 'content_add' %}" enctype="multipart/form-data" id="content-form">
         {% csrf_token %}
@@ -12,11 +11,6 @@
         <!-- TODO: make the user select what type of media he wants to be generated e.g video, image -->
         <!-- TODO: add mosaic generator, output video, free border-->
     </form>
-    <form action="{% url 'contentfile_upload' %}"
-      class="dropzone">
-      {% csrf_token %}
-    </form>
-      <br>
-      <button type="submit" class="button" form="content-form">Create</button>
-    <script src="{% static 'frameworks/dropzone/dropzone.min.js' %}"></script>
+    <br>
+    <button type="submit" class="button" form="content-form">Create</button>
 {% endblock %}
