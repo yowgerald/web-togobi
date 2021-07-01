@@ -41,12 +41,62 @@ def content_list(request):
         'contents_top' : contents_top,
         })
 
-
 def content_details(request, id):
     if request.method == 'GET':
         content = get_object_or_404(Content, id=id)
     return render(request, 'content_details.html', {'content': content})
 
+
+def get_filetype(file):
+    fileInfo = MediaInfo.parse(file)
+    _type = False
+    for track in fileInfo.tracks:
+        if track.track_type == "Image":
+            _type = track.track_type
+        elif track.track_type == "Video":
+            _type = track.track_type
+    return _type
+
+def contentfile_upload(files, content):
+    # TODO: may need to be in try catch
+    storage_client = storage.Client()
+    transport = AuthorizedSession(credentials=storage_client._credentials)
+    bucket = settings.GCP_BUCKET_NAME
+    valid_files = True
+    for file in files:
+        if not get_filetype(file):
+            valid_files = False
+    return True
+    if valid_files:
+        for file in files:
+            f_type = get_filetype(file)
+            file.open()
+            data = file.read()
+            # file.seek(0, os.SEEK_END)
+            # fsize = file.tell()
+            # TODO: need to check the file size of the video, allowed size is 10mb of free users?
+            file.close()
+            url_template = (
+                u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
+            upload_url = url_template.format(bucket=bucket)
+            chunk_size = 1024 * 1024  # 1MB or 256 x 1024 bytes (256 KB)
+            upload = ResumableUpload(upload_url, chunk_size)
+            stream = io.BytesIO(data)
+            ext = Path(file.name).suffix
+            filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
+            metadata = {u'name': filename, }
+            content_type = u'image/png'
+            response = upload.initiate(transport, stream, metadata, content_type)
+            while not upload.finished:
+                upload.transmit_next_chunk(transport)
+            content_file = ContentFile()
+            content_file.source = filename
+            content_file.f_type = f_type
+            content_file.content = content
+            content_file.save()
+        return True
+    else:
+        return False
 
 @login_required
 def content_add(request):
@@ -56,12 +106,24 @@ def content_add(request):
             content = content_form.save(commit=False)
             content.user = request.user
             content.save()
-            return redirect('content_details', id=content.id)
+            files = request.FILES.getlist('content-file', False)
+            if files:
+                exclusions = request.POST.get('exclusions', False)
+                final_files = []
+                if (exclusions):
+                    exs = exclusions.split(",")
+                    exs[:] = list(map(int, exs))
+                    for idx, f in enumerate(files):
+                        if idx not in exs:
+                            final_files.append(f)
+                if (final_files):
+                    success_upload = contentfile_upload(final_files, content)
+                    if success_upload:
+                        return redirect('content_details', id=content.id)
         else:
             print('not valid')
     else:
         content_form = ContentForm(initial={})
-    # TODO: catch exception, saying internet speed is not good for uploading
         context = {
             'content_form': content_form,
             'content_file_form': ContentFileForm(initial={}),
@@ -91,44 +153,6 @@ def content_join(request, id):
         content_join.status = 1 # status pending
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
-
-@login_required
-def contentfile_upload(request):
-    storage_client = storage.Client()
-    transport = AuthorizedSession(credentials=storage_client._credentials)
-    bucket = settings.GCP_BUCKET_NAME
-    file = request.FILES.get('file', False)
-    if (file):
-        fileInfo = MediaInfo.parse(file)
-        f_type = False
-        for track in fileInfo.tracks:
-            if track.track_type == "Image":
-                f_type = track.track_type
-            elif track.track_type == "Video":
-                f_type = track.track_type
-    if (f_type):
-        file.open()
-        data = file.read()
-        file.seek(0, os.SEEK_END)
-        fsize = file.tell()
-        # TODO: need to check the file size of the video, allowed size is 10mb of free users?
-        file.close()
-        url_template = (
-            u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
-        upload_url = url_template.format(bucket=bucket)
-        chunk_size = 1024 * 1024  # 1MB or 256 x 1024 bytes (256 KB)
-        upload = ResumableUpload(upload_url, chunk_size)
-        stream = io.BytesIO(data)
-        ext = Path(file.name).suffix
-        filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
-        metadata = {u'name': filename, }
-        content_type = u'image/png'
-        response = upload.initiate(transport, stream, metadata, content_type)
-        while not upload.finished:
-            upload.transmit_next_chunk(transport)
-        return JsonResponse({'status':'success'}, status=200, safe=False)
-
-    return JsonResponse({'status':'failed'}, status=400, safe=False)
 
 def get_contents(request):  # common
     if request.method == 'GET':

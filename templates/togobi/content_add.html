@@ -10,7 +10,12 @@
         <!-- TODO: in paying plan can add multiple images/videos -->
         <!-- TODO: make the user select what type of media he wants to be generated e.g video, image -->
         <!-- TODO: add mosaic generator, output video, free border-->
+        <div id="upload_container"></div>
+        <button type="submit" class="button">Create</button>
     </form>
     <br>
-    <button type="submit" class="button" form="content-form">Create</button>
+    <script src="{% static 'frameworks/react/react.development.js' %}"></script>
+    <script src="{% static 'frameworks/react/react-dom.development.js' %}"></script>
+    <script src="{% static 'frameworks/react/babel.min.js' %}"></script>
+    <script type='text/babel' src="{% static 'js/fupload.js' %}"></script>
 {% endblock %}
