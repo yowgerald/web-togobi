@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
-from django.http import JsonResponse
 from django.db.models import Count
 from django.db.models import TextField
 from django.db.models.functions import Concat
@@ -24,7 +23,7 @@ from google.cloud import storage
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 # Create your views here.
 time_threshold = datetime.now() + timedelta(hours=1)
@@ -98,6 +97,16 @@ def contentfile_upload(files, content):
     else:
         return False
 
+@api_view(['GET'])
+def gen_signed_url(request):
+    # TODO: may need to do something if file don't exists
+    client = storage.Client()
+    bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
+    blob = bucket.get_blob(request.GET.get('file'))
+    expiration = datetime.now() + timedelta(hours=1)
+    url = blob.generate_signed_url(expiration=expiration)
+    return Response({'url': url})
+
 @login_required
 def content_add(request):
     if request.method == 'POST':
@@ -170,7 +179,7 @@ def get_contents(request):  # common
 
 # APIs
 @api_view(['GET'])
-@permission_classes((permissions.AllowAny,))
+@permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
     contents = get_contents(request)
     serializer = ContentSerializer(contents, many=True)

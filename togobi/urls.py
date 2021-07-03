@@ -12,5 +12,7 @@ urlpatterns = [
     path('manage/content/<int:id>/edit', views.own_content_edit, name='own_content_edit'),
     path('manage/content/<int:id>/details', views.own_content_details, name='own_content_details'),
     path('manage/content/<int:id>/delete', views.own_content_delete, name='own_content_delete'),
-    path('notifs/tab', views.notifs, name='notifs')
+    path('notifs/tab', views.notifs, name='notifs'),
+
+    path('contentfile/signed_url', views.gen_signed_url, name='file_signed_url')
 ]
