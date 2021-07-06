@@ -98,6 +98,7 @@ def contentfile_upload(files, content):
         return False
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def gen_signed_url(request):
     # TODO: may need to do something if file don't exists
     client = storage.Client()

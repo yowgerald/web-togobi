@@ -41,9 +41,12 @@ INSTALLED_APPS = [
     'payments.apps.PaymentsConfig',
     'togobi.apps.TogobiConfig',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -156,6 +159,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%m/%d/%Y %H:%M',
 }
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
 
 # for google cloud storage
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
