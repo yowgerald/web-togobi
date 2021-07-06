@@ -100,14 +100,15 @@ def contentfile_upload(files, content):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def gen_signed_url(request):
-    # TODO: may need to do something if file don't exists
-    client = storage.Client()
-    bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
-    blob = bucket.get_blob(request.GET.get('file'))
-    expiration = datetime.now() + timedelta(hours=1)
-    url = blob.generate_signed_url(expiration=expiration)
+    file = request.GET.get('file')
+    url = None
+    if file is not None:
+        client = storage.Client()
+        bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
+        blob = bucket.get_blob(file)
+        expiration = datetime.now() + timedelta(hours=1)
+        url = blob.generate_signed_url(expiration=expiration)
     return Response({'url': url})
-
 @login_required
 def content_add(request):
     if request.method == 'POST':
