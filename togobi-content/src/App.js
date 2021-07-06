@@ -1,14 +1,10 @@
 import './App.css';
 import React from 'react';
-import axios from 'axios';
+import { Content } from './components/Content';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-      </header>
-      <p>test add</p>
-    </div>
+    <Content/>
   );
 }
 

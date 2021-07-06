@@ -97,18 +97,6 @@ def contentfile_upload(files, content):
     else:
         return False
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
-def gen_signed_url(request):
-    file = request.GET.get('file')
-    url = None
-    if file is not None:
-        client = storage.Client()
-        bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
-        blob = bucket.get_blob(file)
-        expiration = datetime.now() + timedelta(hours=1)
-        url = blob.generate_signed_url(expiration=expiration)
-    return Response({'url': url})
 @login_required
 def content_add(request):
     if request.method == 'POST':
@@ -187,6 +175,18 @@ def content_collection(request):
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def gen_signed_url(request):
+    file = request.GET.get('file')
+    url = None
+    if file is not None:
+        client = storage.Client()
+        bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
+        blob = bucket.get_blob(file)
+        expiration = datetime.now() + timedelta(hours=1)
+        url = blob.generate_signed_url(expiration=expiration)
+    return Response({'url': url})
 
 # Manage own
 @login_required
