@@ -29,7 +29,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 time_threshold = datetime.now() + timedelta(hours=1)
 
 def content_list(request):
-    contents = get_contents(request)
+    contents = __get_contents(request)
     contents_today = Content.objects.filter(
             target_date__day=date.today().day).order_by('-target_date')
     contents_top = ContentJoin.objects.annotate(distinct_name=Concat(
@@ -153,7 +153,7 @@ def content_join(request, id):
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
 
-def get_contents(request):  # common
+def __get_contents(request):
     if request.method == 'GET':
         query = request.GET.get('q')
         if query:
@@ -171,7 +171,7 @@ def get_contents(request):  # common
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
-    contents = get_contents(request)
+    contents = __get_contents(request)
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
 

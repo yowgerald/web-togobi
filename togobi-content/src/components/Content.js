@@ -1,29 +1,34 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { ContentFile } from './ContentFile';
+import { config } from '../Constants';
+
+const API_URL = config.url.API_URL;
 
 export class Content extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contents: []
+            contents: [],
         };
     }
 
     componentDidMount() {
-        axios.get('http://localhost:8000/contents')
-        .then(response => {
-            this.setState({ contents: response.data })
-            console.log(response.data)
-        })
-        .catch(error => {
-            console.log(error);
-        });
+        axios.get(API_URL+'/contents')
+            .then(response => {
+                this.setState({ contents: response.data })
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     render() {
         return (
-            <div>
+            <div className="large-6 columns">
+                <div className="row column">
+			    	<h4 className="text-center">LATEST</h4>
+		  	    </div>
                 {this.state.contents.map(content => (
                     <div className="card" key={content.id}>
                         {/* TODO: put hrefs value */}
