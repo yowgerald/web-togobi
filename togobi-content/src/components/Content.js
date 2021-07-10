@@ -32,7 +32,7 @@ export class Content extends Component {
                 {this.state.contents.map(content => (
                     <div className="card" key={content.id}>
                         {/* TODO: put hrefs value */}
-                        <ContentFile files={content.content_files}/>
+                        <ContentFile content={content.id}/>
                         <div className="card-section">
                             <h4><a href="#">{content.title}</a></h4>
                             <p>

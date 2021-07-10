@@ -15,5 +15,5 @@ urlpatterns = [
     path('notifs/tab', views.notifs, name='notifs'),
     
     path('contents', views.content_collection, name='contents'),
-    path('contentfile/signed_url', views.gen_signed_url, name='file_signed_url'),
+    path('contents/<int:id>/content_files', views.content_file_collection, name='content_files'),
 ]

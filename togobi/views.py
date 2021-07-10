@@ -13,7 +13,7 @@ from pymediainfo import MediaInfo
 
 from togobi.forms import ContentForm, ContentFileForm
 from togobi.models import Content, ContentFile, ContentJoin
-from togobi.serializers import ContentSerializer
+from togobi.serializers import ContentSerializer, ContentFileSerializer
 
 from google.auth.transport.requests import AuthorizedSession
 from google.resumable_media.requests import ResumableUpload
@@ -177,8 +177,14 @@ def content_collection(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def gen_signed_url(request):
-    file = request.GET.get('file')
+def content_file_collection(request, id):
+    content_files = ContentFile.objects.filter(content=id, is_active=True)
+    serializer = ContentFileSerializer(content_files, many=True)
+    for cf in content_files:
+        cf.signed_url = __gen_signed_url(cf.source)
+    return Response(serializer.data)
+
+def __gen_signed_url(file):
     url = None
     if file is not None:
         client = storage.Client()
@@ -186,7 +192,7 @@ def gen_signed_url(request):
         blob = bucket.get_blob(file)
         expiration = datetime.now() + timedelta(hours=1)
         url = blob.generate_signed_url(expiration=expiration)
-    return Response({'url': url})
+    return url
 
 # Manage own
 @login_required

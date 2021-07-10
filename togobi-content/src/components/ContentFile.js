@@ -16,28 +16,31 @@ export class ContentFile extends Component {
 
     handleLoadMore() {
         console.log('TODO: implement load more');
+        // TODO: increment pagination
     }
 
     componentDidMount() {
-        var filesWithSigned = this.props.files;
-        this.props.files.forEach((file, i) => {
-            axios.get(API_URL+'/contentfile/signed_url', {
-                    params: {
-                        file: file.source
-                    }
-                })
-                .then(response => {
-                    filesWithSigned[i].signed_url = response.data.url;
-                })
-                .catch(error => {
-                    console.log(error);
-                    // TODO: may need to return something.
-                });
-        });
-        this.setState({ files: filesWithSigned })
+        // TODO: default pagination
+        var content = this.props.content;
+        axios.get(API_URL+'/contents/'+content+'/content_files')
+            .then(response => {
+                this.setState({ files: response.data})
+            })
+            .catch(error => {
+                console.log(error);
+                // TODO: may need to return something.
+            });
     }
 
     render() {
+        var loadMore = null;
+        if(this.state.files.length > 0) {
+            loadMore = <div className="gallery__item">
+            <div className="gallery__thumb" onClick={() => this.handleLoadMore()}>
+                    <h4>Load More</h4>
+                </div>
+            </div>
+        }
         var files = this.state.files.map((file, i) => {
             var isFirstItem = i === 0 ? true : false;
             var inputElement = <input type="radio" id={file.id} name="gallery" className="gallery__selector"/>;
@@ -45,7 +48,6 @@ export class ContentFile extends Component {
                 inputElement = <input type="radio" id={file.id} name="gallery" className="gallery__selector" defaultChecked/>;
             }
             return [
-
                 <div key={"gallery__item"+file.id} className="gallery__item">
                     {inputElement}
                     <img className="gallery__img" src={file.signed_url} alt=""/>
@@ -55,15 +57,12 @@ export class ContentFile extends Component {
                 </div>
             ];
         });
+        
         return (
             // TODO: what happens to uploaded videos?
             <section className="gallery">
                 {files}
-                <div className="gallery__item">
-                    <div className="gallery__thumb" onClick={() => this.handleLoadMore()}>
-                        <h4>Load More</h4>
-                    </div>
-                </div>
+                {loadMore}
             </section>
         )
     }
