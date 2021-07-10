@@ -179,10 +179,23 @@ def content_collection(request):
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_file_collection(request, id):
     content_files = ContentFile.objects.filter(content=id, is_active=True)
-    serializer = ContentFileSerializer(content_files, many=True)
+    page = request.GET.get('page')
+    paginator = Paginator(content_files, 2)
+    content_files = paginator.page(page)
+    next_page = prev_page = None
+    if content_files.has_other_pages():
+        if content_files.has_next():
+            next_page = content_files.next_page_number()
+        if content_files.has_previous():
+            prev_page = content_files.previous_page_number()
     for cf in content_files:
         cf.signed_url = __gen_signed_url(cf.source)
-    return Response(serializer.data)
+    serializer = ContentFileSerializer(content_files, many=True)
+    return Response({
+            'next': next_page,
+            'previous': prev_page,
+            'result': serializer.data
+        })
 
 def __gen_signed_url(file):
     url = None
