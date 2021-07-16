@@ -171,9 +171,20 @@ def __get_contents(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
-    contents = __get_contents(request)
+    # TODO: search also by description, location, user
+    query = request.GET.get('q')
+    if query:
+        contents = Content.objects.filter(
+            title__icontains = query, target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
+    else:
+        contents = Content.objects.filter(
+            target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(contents, 20)
+    contents = paginator.page(page)
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])

@@ -12,8 +12,6 @@ export class ContentFile extends Component {
             next_page: null,
             prev_page: null,
         };
-
-        this.handleLoadNext = this.handleLoadNext.bind(this);
     }
 
     handleLoadNext() {
@@ -23,8 +21,6 @@ export class ContentFile extends Component {
     handleLoadPrevious() {
         this.getContentFiles(this.state.prev_page);
     }
-
-    onSiteChanged(){}
 
     async getContentFiles(page = 1) {
         var content = this.props.content;

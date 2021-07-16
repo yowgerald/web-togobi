@@ -1,26 +1,45 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { ContentFile } from './ContentFile';
+import { ContentFile } from '../components/ContentFile';
 import { config } from '../Constants';
 
 const API_URL = config.url.API_URL;
 
 export class Content extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
+            q: '',
             contents: [],
         };
     }
 
-    componentDidMount() {
-        axios.get(API_URL+'/contents')
-            .then(response => {
+    async getContents(query = null) {
+        await axios.get(API_URL+'/contents',
+            {
+                params: {
+                    q: query
+                }
+            }).then(response => {
                 this.setState({ contents: response.data })
             })
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    handleUpdateQuery(e) {
+        this.setState({
+            q: e.target.value
+        });
+    }
+
+    handleSearch(query) {
+        this.getContents(query);
+    }
+
+    componentDidMount() {
+        this.getContents();
     }
 
     render() {
@@ -29,6 +48,14 @@ export class Content extends Component {
                 <div className="row column">
 			    	<h4 className="text-center">LATEST</h4>
 		  	    </div>
+                <div className="row">
+                    <div className="small-9 columns">
+                        <input name="q" type="text" onChange={(e) => this.handleUpdateQuery(e)}/>
+                    </div>
+                    <div className="small-3 columns">
+                      <input type="submit" className="button expanded" defaultValue="Search" onClick={() => this.handleSearch(this.state.q)}/>
+                    </div>
+                </div> 
                 {this.state.contents.map(content => (
                     <div className="card" key={content.id}>
                         {/* TODO: put hrefs value */}
