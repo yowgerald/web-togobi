@@ -1,6 +1,6 @@
 const prod = {
     url: {
-        API_URL: 'https://togobi.com',
+        API_URL: '',
     }
 };
 
@@ -10,5 +10,8 @@ const dev = {
     }
 };
 
-
 export const config = process.env.NODE_ENV === 'development' ? dev : prod;
+export const fileType = {
+    IMAGE: 'Image',
+    VIDEO: 'Video'
+}

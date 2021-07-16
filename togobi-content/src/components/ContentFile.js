@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config } from '../Constants';
+import { config, fileType } from '../Constants';
 
 const API_URL = config.url.API_URL;
 
@@ -13,12 +13,18 @@ export class ContentFile extends Component {
             prev_page: null,
         };
 
-        this.handleLoadMore = this.handleLoadMore.bind(this);
+        this.handleLoadNext = this.handleLoadNext.bind(this);
     }
 
-    handleLoadMore() {
+    handleLoadNext() {
         this.getContentFiles(this.state.next_page);
     }
+
+    handleLoadPrevious() {
+        this.getContentFiles(this.state.prev_page);
+    }
+
+    onSiteChanged(){}
 
     async getContentFiles(page = 1) {
         var content = this.props.content;
@@ -44,38 +50,55 @@ export class ContentFile extends Component {
     }
 
     render() {
+        var file_count = this.state.files.length;
+        var galleryClass = file_count > 1 ? 'gallery' : '';
         var files = this.state.files.map((file, i) => {
-            var isFirstItem = i === 0 ? true : false;
-            var inputElement = <input type="radio" id={file.id} name="gallery" className="gallery__selector"/>;
-            if (isFirstItem) {
-                inputElement = <input type="radio" id={file.id} name="gallery" className="gallery__selector" defaultChecked/>;
+            // TODO: may need to use external player for video
+            // TODO: when item is clicked, should be fullscreen
+            var class_suffix = i + 1;
+            if (file_count < 5) {
+                if (file_count % 2 === 0 && (file_count === class_suffix)) {
+                    class_suffix += ' item__stretch';
+                } else if (file_count === 3 && (class_suffix === 2 || class_suffix === 3)) {
+                    class_suffix += ' item__stretch--'+class_suffix;
+                }
             }
             return [
-                <div key={"gallery__item"+file.id} className="gallery__item">
-                    {inputElement}
-                    {/* TODO: adjust the preview size if less than 3 */}
-                    <img className="gallery__img" src={file.signed_url} alt=""/>
-                    <label htmlFor={file.id} className="gallery__thumb">
-                        <img src={file.signed_url} alt=""/>
-                    </label>
-                </div>
+                <figure key={"gallery__item"+file.id} className={"gallery__item gallery__item--" + class_suffix}>
+                    {(() => {
+                        if (file.f_type === fileType.IMAGE){
+                            return (
+                              <img key={"src" + file.id} className="gallery__media" src={file.signed_url} alt=""/>
+                            );
+                        } else if(file.f_type === fileType.VIDEO) {
+                            return (
+                                <video key={"src" + file.id} className="gallery__media" src={file.signed_url} alt="" controls/>
+                            );
+                        }
+                        return null;
+                    })()}
+                </figure>
             ];
         });
         
-        return (
-            // TODO: what happens to uploaded videos?
-            // TODO: add previous?
-            <section className="gallery">
+        return [
+            <section key="gallery" className={galleryClass}>
                 {files}
-                {this.state.next_page != null ?
-                    <div className="gallery__item">
-                        <div className="gallery__thumb" onClick={() => this.handleLoadMore()}>
-                            <h4>Load More</h4>
-                        </div>
+            </section>,
+            <br key="gallery-load-break"/>,
+            <div key="items-page" className="items__page">
+                {this.state.prev_page != null ?
+                    <div key="load-previous" onClick={() => this.handleLoadPrevious()}>
+                        Previous
                     </div>
                 : null}
-                
-            </section>
-        )
+                {this.state.prev_page != null && this.state.next_page ? <span>&nbsp; &bull; &nbsp;</span> : null}
+                {this.state.next_page != null ?
+                    <div key="load-next" onClick={() => this.handleLoadNext()}>
+                        Next
+                    </div>
+                : null}
+            </div>
+        ]
     }
 }

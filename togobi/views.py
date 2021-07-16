@@ -178,9 +178,9 @@ def content_collection(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_file_collection(request, id):
-    content_files = ContentFile.objects.filter(content=id, is_active=True)
+    content_files = ContentFile.objects.filter(content=id, is_active=True).order_by('f_type').reverse()
     page = request.GET.get('page')
-    paginator = Paginator(content_files, 2)
+    paginator = Paginator(content_files, 5)
     content_files = paginator.page(page)
     next_page = prev_page = None
     if content_files.has_other_pages():
