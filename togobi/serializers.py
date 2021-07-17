@@ -16,6 +16,7 @@ class ContentFileSerializer(serializers.ModelSerializer):
 class ContentSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     content_files = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    total_attendees = serializers.IntegerField(min_value=0)
     class Meta:
         model = Content
         fields = (
@@ -26,6 +27,7 @@ class ContentSerializer(serializers.ModelSerializer):
             'target_date',
             'username',
             'content_files',
+            'total_attendees'
         )
 
 class ContentTopSerializer(serializers.ModelSerializer):

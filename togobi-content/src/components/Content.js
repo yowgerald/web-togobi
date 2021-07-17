@@ -71,7 +71,7 @@ export class Content extends Component {
                             <br/>
                             <span><i className="fi-torso"> By { content.username }&nbsp;&nbsp;</i></span>
                             <br/>
-                            <span><i className="fi-comments">{ content.total_attendees }attendees</i></span>
+                            <span><i className="fi-comments">{ content.total_attendees } attendees</i></span>
                             </p>
                             <a href="#" className="button small expanded">Join</a>
                         </div>
