@@ -29,22 +29,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 time_threshold = datetime.now() + timedelta(hours=1)
 
 def content_list(request):
-    contents = __get_contents(request)
-    contents_today = Content.objects.filter(
-            target_date__day=date.today().day).order_by('-target_date')
-    contents_top = ContentJoin.objects.annotate(distinct_name=Concat(
-        'content_id', 'content_id', output_field=TextField())).order_by('distinct_name').distinct('distinct_name')
-    return render(request, 'home.html', {
-        'contents': contents,
-        'contents_today' : contents_today,
-        'contents_top' : contents_top,
-        })
-
-def content_details(request, id):
-    if request.method == 'GET':
-        content = get_object_or_404(Content, id=id)
-    return render(request, 'content_details.html', {'content': content})
-
+    return render(request, 'home.html', {})
 
 def get_filetype(file):
     fileInfo = MediaInfo.parse(file)
@@ -129,7 +114,6 @@ def content_add(request):
         }
         return render(request, 'content_add.html', context)
 
-
 @login_required
 def content_join(request, id):
     if request.method == 'GET':
@@ -152,20 +136,6 @@ def content_join(request, id):
         content_join.status = 1 # status pending
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
-
-def __get_contents(request):
-    if request.method == 'GET':
-        query = request.GET.get('q')
-        if query:
-            contents = Content.objects.filter(
-                title__icontains = query, target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
-        else:
-            contents = Content.objects.filter(
-                target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
-        page = request.GET.get('page', 1)
-        paginator = Paginator(contents, 20)
-        contents = paginator.page(page)
-    return contents
 
 # APIs
 @api_view(['GET'])

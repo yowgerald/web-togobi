@@ -60,10 +60,9 @@ export class Content extends Component {
                 <a href="/content/add" className="button ffab">Add Something</a>
                 {this.state.contents.map(content => (
                     <div className="card" key={content.id}>
-                        {/* TODO: put hrefs value */}
                         <ContentFile content={content.id}/>
                         <div className="card-section">
-                            <h4><a href="#">{content.title}</a></h4>
+                            <h4>{content.title}</h4>
                             <p>
                             <span>{ content.description }</span>
                             <br/>
@@ -73,7 +72,7 @@ export class Content extends Component {
                             <br/>
                             <span><i className="fi-comments">{ content.total_attendees } attendees</i></span>
                             </p>
-                            <a href="#" className="button small expanded">Join</a>
+                            <a href={"/content/"+content.id+"/join"} className="button small expanded">Join</a>
                         </div>
                     </div>  
                 ))}

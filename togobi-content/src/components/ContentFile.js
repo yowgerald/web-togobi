@@ -82,6 +82,7 @@ export class ContentFile extends Component {
                 {files}
             </section>,
             <br key="gallery-load-break"/>,
+            // TODO: add loading effect for page transition
             <div key="items-page" className="items__page">
                 {this.state.prev_page != null ?
                     <div key="load-previous" onClick={() => this.handleLoadPrevious()}>
