@@ -3,4 +3,4 @@
 *.pyc
 /staticfiles
 /venv
-*.json
+/*.json
