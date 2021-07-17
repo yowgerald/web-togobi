@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from togobi.models import Content, ContentFile
+from togobi.models import Content, ContentFile, ContentJoin
 
 
 class ContentFileSerializer(serializers.ModelSerializer):
@@ -26,4 +26,14 @@ class ContentSerializer(serializers.ModelSerializer):
             'target_date',
             'username',
             'content_files',
+        )
+
+class ContentTopSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source='content.id', read_only=True)
+    title = serializers.CharField(source='content.title', read_only=True)
+    class Meta:
+        model = ContentJoin
+        fields = (
+            'id',
+            'title'
         )

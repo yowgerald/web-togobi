@@ -6,7 +6,7 @@
   padding: 0;
   box-sizing: inherit;
 }
-#root>.large-6.columns{
+#root>.large-6.columns:nth-child(1){
     border-right: 1px solid #E3E5E8;
 }
 .row.column>.text-center{

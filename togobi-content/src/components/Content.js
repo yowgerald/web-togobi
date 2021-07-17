@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { ContentFile } from '../components/ContentFile';
 import { config } from '../Constants';
+import { Suggestion } from '../components/Suggestion';
 
 const API_URL = config.url.API_URL;
 
@@ -43,8 +44,8 @@ export class Content extends Component {
     }
 
     render() {
-        return (
-            <div className="large-6 columns">
+        return [
+            <div key="content-list" className="large-6 columns">
                 <div className="row column">
 			    	<h4 className="text-center">LATEST</h4>
 		  	    </div>
@@ -55,7 +56,8 @@ export class Content extends Component {
                     <div className="small-3 columns">
                       <input type="submit" className="button expanded" defaultValue="Search" onClick={() => this.handleSearch(this.state.q)}/>
                     </div>
-                </div> 
+                </div>
+                <a href="/content/add" className="button ffab">Add Something</a>
                 {this.state.contents.map(content => (
                     <div className="card" key={content.id}>
                         {/* TODO: put hrefs value */}
@@ -75,7 +77,9 @@ export class Content extends Component {
                         </div>
                     </div>  
                 ))}
-            </div>
-        )
+                {/* TODO: add pagination, maybe managed by every scroll? */}
+            </div>,
+            <Suggestion key="suggestion"/>
+        ]
     }
 }

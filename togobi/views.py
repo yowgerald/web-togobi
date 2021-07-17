@@ -13,7 +13,7 @@ from pymediainfo import MediaInfo
 
 from togobi.forms import ContentForm, ContentFileForm
 from togobi.models import Content, ContentFile, ContentJoin
-from togobi.serializers import ContentSerializer, ContentFileSerializer
+from togobi.serializers import ContentSerializer, ContentFileSerializer, ContentTopSerializer
 
 from google.auth.transport.requests import AuthorizedSession
 from google.resumable_media.requests import ResumableUpload
@@ -185,7 +185,6 @@ def content_collection(request):
     serializer = ContentSerializer(contents, many=True)
     return Response(serializer.data)
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_file_collection(request, id):
@@ -207,6 +206,23 @@ def content_file_collection(request, id):
             'previous': prev_page,
             'result': serializer.data
         })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def contents_today(request):
+    cs_today = Content.objects.filter(
+            target_date__day=date.today().day).order_by('-target_date')
+    serializer = ContentSerializer(cs_today, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def contents_top(request):
+    # TODO: may need to return the number of attendees
+    t_contents = ContentJoin.objects.annotate(distinct_name=Concat(
+        'content_id', 'content_id', output_field=TextField())).order_by('distinct_name').distinct('distinct_name')
+    serializer = ContentTopSerializer(t_contents, many=True)
+    return Response(serializer.data)
 
 def __gen_signed_url(file):
     url = None
