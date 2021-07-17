@@ -2,107 +2,13 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 	{# START #}
+	{% load static %}
 	<!-- TODO: categorize content color? -->
+	<link href="{% static 'home/css/main.6ea41102.chunk.css' %}" rel="stylesheet">
 	<div class="row">
-		<div class="large-6 columns" style="border-right: 1px solid #E3E5E8;">
-			<div class="row column">
-				<h4 style="margin: 0;" class="text-center">LATEST</h4>
-		  	</div>
-			{% include 'parts/_content_search.html' %}
-			<a href="{% url 'content_add'%}" class="button ffab">Add Something</a>
-			{% for content in contents %}
-				<div class="card">
-				  <img src="https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg">
-				  <div class="card-section">
-					<h4><a href="{% url 'content_details' content.id %}">{{content.title}}</a></h4>
-					<p>
-						<span>{{ content.description }}</span>
-						<br/>
-						<span><i class="fi-calendar"> {{ content.target_date }} &nbsp;&nbsp;</i></span>
-						<br/>
-						<span><i class="fi-torso"> By {{ content.user.username }}&nbsp;&nbsp;</i></span>
-						<br/>
-						<span><i class="fi-comments"> {{ content.total_attendees }} attendees</i></span>
-					</p>
-						<a href="{% url 'content_join' content.id %}" class="button small expanded">Join</a>
-				  </div>
-				</div>
-			{% endfor %}
-			{% if contents.has_other_pages %}
-            <ul class="pagination" role="navigation" aria-label="Pagination">
-                {% if contents.has_previous %}
-                    <li><a href="?page={{ contents.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous <span class="show-for-sr">page</span></a></li>
-                {% else %}
-                    <li class="disabled">Previous <span class="show-for-sr">page</span></li>
-                {% endif %}
-                {% for i in contents.paginator.page_range %}
-                    {% if contents.number == i %}
-                        <li class="current"><span class="show-for-sr">You're on page</span>{{ i }}</li>
-                    {% else %}
-                        <li><a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><span class="show-for-sr">You're on page</span>{{ i }}</a></li>
-                      {% endif %}
-                {% endfor %}
-                {% if contents.has_next %}
-                    <li><a href="?page={{ contents.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next page">Next <span class="show-for-sr">page</span></a></li>
-                {% else %}
-                <li class="disabled">Next <span class="show-for-sr">page</span></li>
-                {% endif %}
-            </ul>
-        {% endif %}
-		</div>
-  		<div class="large-6 columns">
-			  <!-- TODO: adjust the combination of the media and title -->
-  			<aside>
-				  <br>
-				  <div class="row column">
-					<p class="lead">TODAY</p>
-					{% for content in contents_today %}
-			    		<div class="media-object">
-			    	      <div class="media-object-section">
-							{% for file in content.contentfile_set.all %}
-								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
-								{% elif file.f_type == 'Video'%}
-								<!-- TODO: need to generate gif from video -->
-								{% endif%}
-								{% empty %}
-								<!-- TODO: show system generated image from title -->
-							{% endfor %}
-			    	      </div>
-			    	      <div class="media-object-section">
-			    	        <h5>{{ content.title }}</h5>
-			    	      </div>
-						</div>
-					{% empty %}
-						No items available yet.
-					{% endfor %} 
-				</div>
-		      	<hr>
-	      		<div class="row column">
-	        		<p class="lead">TOP</p>
-					{% for top in contents_top %}
-						<div class="media-object">
-						  <div class="media-object-section">
-							{% for file in content.contentfile_set.all %}
-								{% if file.f_type == 'Image' %}
-									<img src="{{ settings.GCP_BASE_URL }}/{{ settings.GCP_BUCKET_NAME }}/{{ settings.GCP_FOLDER_UPLOAD }}/{{ file.source }}" alt="image for article" alt="article preview image" class="home-image-small">
-								{% elif file.f_type == 'Video'%}
-								<!-- TODO: need to generate gif from video -->
-								{% endif%}
-								{% empty %}
-								<!-- TODO: show system generated image from title -->
-							{% endfor %}
-						  </div>
-						  <div class="media-object-section">
-							<h5>{{ top.content.title }}</h5>
-						  </div>
-						</div>
-					{% empty %}
-						No items available yet.
-					{% endfor %} 
-				  </div>
-      		</aside>
-  		</div>
+		<div id="root"></div>
 	</div>
-{% load static %}
+	<script>!function(e){function t(t){for(var n,a,i=t[0],c=t[1],l=t[2],s=0,p=[];s<i.length;s++)a=i[s],Object.prototype.hasOwnProperty.call(o,a)&&o[a]&&p.push(o[a][0]),o[a]=0;for(n in c)Object.prototype.hasOwnProperty.call(c,n)&&(e[n]=c[n]);for(f&&f(t);p.length;)p.shift()();return u.push.apply(u,l||[]),r()}function r(){for(var e,t=0;t<u.length;t++){for(var r=u[t],n=!0,i=1;i<r.length;i++){var c=r[i];0!==o[c]&&(n=!1)}n&&(u.splice(t--,1),e=a(a.s=r[0]))}return e}var n={},o={1:0},u=[];function a(t){if(n[t])return n[t].exports;var r=n[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,a),r.l=!0,r.exports}a.e=function(e){var t=[],r=o[e];if(0!==r)if(r)t.push(r[2]);else{var n=new Promise((function(t,n){r=o[e]=[t,n]}));t.push(r[2]=n);var u,i=document.createElement("script");i.charset="utf-8",i.timeout=120,a.nc&&i.setAttribute("nonce",a.nc),i.src=function(e){return a.p+"static/js/"+({}[e]||e)+"."+{3:"3a4baa0f"}[e]+".chunk.js"}(e);var c=new Error;u=function(t){i.onerror=i.onload=null,clearTimeout(l);var r=o[e];if(0!==r){if(r){var n=t&&("load"===t.type?"missing":t.type),u=t&&t.target&&t.target.src;c.message="Loading chunk "+e+" failed.\n("+n+": "+u+")",c.name="ChunkLoadError",c.type=n,c.request=u,r[1](c)}o[e]=void 0}};var l=setTimeout((function(){u({type:"timeout",target:i})}),12e4);i.onerror=i.onload=u,document.head.appendChild(i)}return Promise.all(t)},a.m=e,a.c=n,a.d=function(e,t,r){a.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},a.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},a.t=function(e,t){if(1&t&&(e=a(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(a.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var n in e)a.d(r,n,function(t){return e[t]}.bind(null,n));return r},a.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return a.d(t,"a",t),t},a.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},a.p="/",a.oe=function(e){throw console.error(e),e};var i=this["webpackJsonptogobi-content"]=this["webpackJsonptogobi-content"]||[],c=i.push.bind(i);i.push=t,i=i.slice();for(var l=0;l<i.length;l++)t(i[l]);var f=c;r()}([])</script>
+	<script src="{% static 'home/js/2.80b2f958.chunk.js' %}"></script>
+	<script src="{% static 'home/js/main.09f4dcd1.chunk.js' %}"></script>
 {% endblock %}
