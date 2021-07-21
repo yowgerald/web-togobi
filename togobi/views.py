@@ -223,7 +223,7 @@ def own_contents(request):
 
 @login_required
 def own_content_edit(request, id):
-    content = get_object_or_404(Content, id=id)
+    content = get_object_or_404(Content, id=id, user_id=request.user)
     content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
     if request.method == 'POST':
         if content_form.is_valid():

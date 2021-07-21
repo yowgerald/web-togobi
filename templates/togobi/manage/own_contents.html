@@ -11,31 +11,29 @@
     <thead>
         <tr>
           <th width="15%">Title</th>
-          <th width="35%">Description</th>
           <th>Target Date</th>
           <th>Status</th>
+          <th>Attendees</th>
           <th>Edit</th>
-          <th>Attendees Count</th>
-          <th>View More</th>
+          <th>View</th>
         </tr>
       </thead>
       <tbody>
         {% for content in my_contents %}
         <tr>
             <td> {{ content.title }} </td>
-            <td> {{ content.description }} </td>
             <td> {{ content.target_date }} </td>
             {% if content.is_active %}
             <td> active </td>
             {% else %}
             <td> stopped </td>
             {% endif %}
-            <td> <a href="{% url 'own_content_edit' content.id %}">Edit</a> </td>
             {% if content.total_attendees is not None %}
               <td>{{ content.total_attendees }}</td>
             {% else %}
               <td>0</td>
             {% endif %}
+            <td> <a href="{% url 'own_content_edit' content.id %}">Edit</a> </td>
             <td><a href="{% url 'own_content_details' content.id %}">View</a></td>
         </tr>
         {% endfor %} 
