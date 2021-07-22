@@ -1,9 +1,10 @@
 import './App.css';
 import React from 'react';
+import { FormUpload } from './components/FormUpload';
 
 function App() {
   return (
-    <div>TODO</div>
+    <FormUpload/>
   );
 }
 
