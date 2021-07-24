@@ -11,7 +11,7 @@ from django.db.models.functions import Concat
 from pathlib import Path
 from pymediainfo import MediaInfo
 
-from togobi.forms import ContentForm, ContentFileForm
+from togobi.forms import ContentForm
 from togobi.models import Content, ContentFile, ContentJoin
 from togobi.serializers import ContentSerializer, ContentFileSerializer, ContentTopSerializer
 
@@ -50,7 +50,6 @@ def contentfile_upload(files, content):
     for file in files:
         if not get_filetype(file):
             valid_files = False
-    return True
     if valid_files:
         for file in files:
             f_type = get_filetype(file)
@@ -100,17 +99,19 @@ def content_add(request):
                     for idx, f in enumerate(files):
                         if idx not in exs:
                             final_files.append(f)
+                else:
+                    for f in files:
+                        final_files.append(f)
                 if (final_files):
                     success_upload = contentfile_upload(final_files, content)
                     if success_upload:
-                        return redirect('content_details', id=content.id)
+                        return redirect('own_contents')
         else:
             print('not valid')
     else:
         content_form = ContentForm(initial={})
         context = {
             'content_form': content_form,
-            'content_file_form': ContentFileForm(initial={}),
         }
         return render(request, 'content_add.html', context)
 

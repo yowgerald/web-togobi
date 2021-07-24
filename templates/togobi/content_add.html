@@ -2,17 +2,23 @@
 {% block title %}Add content{% endblock %}
 {% block content %}
 {% load static %}
+    <link href="{% static 'fileform/main.css' %}" rel="stylesheet">
     <h3>Add content</h3>
-    <form method="post" action="{% url 'content_add' %}" enctype="multipart/form-data" id="content-form">
-        {% csrf_token %}
-        {{ content_form.as_p }}
-        <!-- {{ content_file_form.as_p }} -->
-        <!-- TODO: in paying plan can add multiple images/videos -->
-        <!-- TODO: make the user select what type of media he wants to be generated e.g video, image -->
-        <!-- TODO: add mosaic generator, output video, free border-->
-        <div id="root"></div>
-        <button type="submit" class="button">Create</button>
-    </form>
-    <br>
+    <div class="row">
+        <div class="columns small-12 large-6">
+            <form method="post" action="{% url 'content_add' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ content_form.as_p }}
+                <!-- {{ content_file_form.as_p }} -->
+                <!-- TODO: in paying plan can add multiple images/videos -->
+                <!-- TODO: make the user select what type of media he wants to be generated e.g video, image -->
+                <!-- TODO: add mosaic generator, output video, free border-->
+                <p>
+                    <div id="root"></div>
+                </p>
+                <button type="submit" class="button">Create</button>
+            </form>
+        </div>
+    </div>
     <script src="{% static 'fileform/main.js' %}"></script>
 {% endblock %}

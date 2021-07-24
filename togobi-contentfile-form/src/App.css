@@ -18,7 +18,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 .gallery__item--1 {
   grid-column-start: 1;
@@ -67,4 +66,13 @@
   cursor: pointer;
   color: #1779BA;
   margin: 0 auto;
+}
+
+.file-remove {
+  position: absolute;
+  z-index: 1;
+  margin-left: -20px;
+  margin-top: -10px;
+  border-radius: 50%;
+  border: 2px solid #cc4b37 !important;
 }

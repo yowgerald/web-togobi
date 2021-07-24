@@ -2,27 +2,22 @@ from django import forms
 from django.forms import ModelForm
 from togobi.models import Content, ContentFile
 
-class DateInput(forms.DateInput):
-    input_type = 'date'
-
-class FileInput(forms.FileInput):
-    input_type = 'file'
-
 class ContentForm(ModelForm):
     class Meta:
         model = Content
         fields = (
-            "title",
-            "description",
-            "tags",
-            "target_date",
-            "is_active"
+            'title',
+            'description',
+            'tags',
+            'target_date',
+            'is_active'
             )
         widgets = {
-            'target_date': DateInput(),
+            'target_date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows':5, 'cols':20}),
         }
         labels = {
-            "is_active": "Active"
+            'is_active': 'Active'
         }
     def __init__(self, *args, **kwargs):
         edit_check = kwargs.pop('edit_check', False)
@@ -41,5 +36,5 @@ class ContentFileForm(ModelForm):
             "source",
         )
         widgets = {
-            'source': FileInput()
+            'source': forms.FileInput(attrs={'type': 'file'})
         }
