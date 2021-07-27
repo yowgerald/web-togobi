@@ -13,8 +13,9 @@ urlpatterns = [
     path('manage/content/<int:id>/delete', views.own_content_delete, name='own_content_delete'),
     path('notifs/tab', views.notifs, name='notifs'),
     
-    path('contents', views.content_collection, name='contents'),
-    path('contents/today', views.contents_today, name='contents_today'),
-    path('contents/top', views.contents_top, name='contents_top'),
-    path('contents/<int:id>/content_files', views.content_file_collection, name='content_files'),
+    path('contents', views.content_collection),
+    path('contents/today', views.contents_today),
+    path('contents/top', views.contents_top),
+    path('contents/<int:id>/content_files', views.content_file_collection),
+    path('contents/<int:id>/content_file/upload', views.contentfile_upload),
 ]

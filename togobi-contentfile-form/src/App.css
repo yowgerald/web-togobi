@@ -76,3 +76,10 @@
   border-radius: 50%;
   border: 2px solid #cc4b37 !important;
 }
+
+.uploading-indicator {
+  position: absolute;
+  background-color: #eeeeee;
+  padding: 0 15px;
+  border-radius: 15px;
+}

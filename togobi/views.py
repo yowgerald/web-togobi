@@ -21,6 +21,7 @@ import io
 import os
 from google.cloud import storage
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -41,46 +42,6 @@ def get_filetype(file):
             _type = track.track_type
     return _type
 
-def contentfile_upload(files, content):
-    # TODO: may need to be in try catch
-    storage_client = storage.Client()
-    transport = AuthorizedSession(credentials=storage_client._credentials)
-    bucket = settings.GCP_BUCKET_NAME
-    valid_files = True
-    for file in files:
-        if not get_filetype(file):
-            valid_files = False
-    if valid_files:
-        for file in files:
-            f_type = get_filetype(file)
-            file.open()
-            data = file.read()
-            # file.seek(0, os.SEEK_END)
-            # fsize = file.tell()
-            # TODO: need to check the file size of the video, allowed size is 10mb of free users?
-            file.close()
-            url_template = (
-                u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
-            upload_url = url_template.format(bucket=bucket)
-            chunk_size = 1024 * 1024  # 1MB or 256 x 1024 bytes (256 KB)
-            upload = ResumableUpload(upload_url, chunk_size)
-            stream = io.BytesIO(data)
-            ext = Path(file.name).suffix
-            filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
-            metadata = {u'name': filename, }
-            content_type = u'image/png'
-            response = upload.initiate(transport, stream, metadata, content_type)
-            while not upload.finished:
-                upload.transmit_next_chunk(transport)
-            content_file = ContentFile()
-            content_file.source = filename
-            content_file.f_type = f_type
-            content_file.content = content
-            content_file.save()
-        return True
-    else:
-        return False
-
 @login_required
 def content_add(request):
     if request.method == 'POST':
@@ -89,24 +50,10 @@ def content_add(request):
             content = content_form.save(commit=False)
             content.user = request.user
             content.save()
-            files = request.FILES.getlist('content-file', False)
-            if files:
-                exclusions = request.POST.get('exclusions', False)
-                final_files = []
-                if (exclusions):
-                    exs = exclusions.split(",")
-                    exs[:] = list(map(int, exs))
-                    for idx, f in enumerate(files):
-                        if idx not in exs:
-                            final_files.append(f)
-                else:
-                    for f in files:
-                        final_files.append(f)
-                if (final_files):
-                    success_upload = contentfile_upload(final_files, content)
-                    if success_upload:
-                        return redirect('own_contents')
+            return redirect('own_contents')
+                        
         else:
+            # TODO: return with error
             print('not valid')
     else:
         content_form = ContentForm(initial={})
@@ -138,6 +85,7 @@ def content_join(request, id):
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
 
+# TODO: return status codes of all api call
 # APIs
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
@@ -204,6 +152,50 @@ def __gen_signed_url(file):
         expiration = datetime.now() + timedelta(hours=1)
         url = blob.generate_signed_url(expiration=expiration)
     return url
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def contentfile_upload(request, id):
+    # TODO: may need to be in try catch
+    storage_client = storage.Client()
+    transport = AuthorizedSession(credentials=storage_client._credentials)
+    bucket = settings.GCP_BUCKET_NAME
+
+    file = request.data.get('file', False)
+    if not file or not get_filetype(file):
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    f_type = get_filetype(file)
+    file.open()
+    data = file.read()
+    # file.seek(0, os.SEEK_END)
+    # fsize = file.tell()
+    # TODO: need to check the file size of the video, allowed size is 10mb of free users?
+    file.close()
+    url_template = (
+        u'https://www.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=resumable')
+    upload_url = url_template.format(bucket=bucket)
+    chunk_size = 1024 * 1024  # 1MB or 256 x 1024 bytes (256 KB)
+    upload = ResumableUpload(upload_url, chunk_size)
+    stream = io.BytesIO(data)
+    ext = Path(file.name).suffix
+    filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
+    metadata = {u'name': filename, }
+    content_type = u'image/png'
+    response = upload.initiate(transport, stream, metadata, content_type)
+    content = get_object_or_404(Content, id=id)
+    while not upload.finished:
+        upload.transmit_next_chunk(transport)
+    content_file = ContentFile()
+    content_file.source = filename
+    content_file.f_type = f_type
+    content_file.content = content
+    content_file.save()
+
+    serializer = ContentFileSerializer(content_file)
+    return Response({
+        'result': serializer.data
+    })
 
 # Manage own
 @login_required

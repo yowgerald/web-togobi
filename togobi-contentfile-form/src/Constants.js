@@ -15,3 +15,9 @@ export const fileType = {
     IMAGE: 'Image',
     VIDEO: 'Video'
 }
+export const uploadStatus = {
+    IN_QUEUE: 'Waiting',
+    IN_PROGRESS: 'Uploading',
+    DONE: 'Finished', 
+
+}

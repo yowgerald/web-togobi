@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config } from '../Constants';
+import { config, uploadStatus } from '../Constants';
 import uuid from 'react-uuid';
 
 
@@ -29,34 +29,75 @@ export class FormUpload extends Component {
             var fi = e.target;
             var files = [];
             if(fi.files.length > 0) {
-                // TODO: when edit mode don't remove existing file state
-                // TODO: need to readjust the index id
                 for (var i = 0; i < fi.files.length; i++) {
-                    var tmpUrl = URL.createObjectURL(e.target.files[i]);
-                    var nfile = fi.files[i];
-                    nfile.id = uuid();
-                    nfile.signed_url = tmpUrl;
+                    var blob = fi.files[i];
+                    var tmpUrl = URL.createObjectURL(blob);
+                    var nfile = {
+                        id: uuid(),
+                        signed_url: tmpUrl,
+                        upload_status: uploadStatus.IN_QUEUE,
+                        blob: blob
+                    };
                     files.push(nfile)
                 }
 
-                // TODO: save file to backend
                 this.setState((prevState) => ({
                     files: prevState.files.concat(files)
-                }),() => {
-                    console.log(this.state.files);
+                }), () => {
+                    let que_files = this.state.files.filter(f => f.upload_status === uploadStatus.IN_QUEUE);
+                    for (let file of que_files) {
+                        this.uploadContentFile(file);
+                    }
                 });
             }
         }
     }
 
     handleRemove(id) {
+        // TODO: remove from backend/ cloud storage
         this.setState({
             files: this.state.files.filter(f => f.id !== id)
         });
     }
 
+    updateFileUploadStatus(id, status) {
+        this.setState((prevState) => {
+            let files = [ ...prevState.files ];
+            for (let file of files) {
+                if(file.id === id) {
+                    file.upload_status = status;
+                    break;
+                }
+            }
+            
+            return { files };
+        });
+    }
+
+    async uploadContentFile(file) {
+        // TODO: content should not be static!
+        var content = 77;
+        var formData = new FormData();
+        formData.append('file', file.blob);
+        // TODO: in queue indicator problem
+        this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
+        await axios.post(API_URL+ '/contents/' + content + '/content_file/upload',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            }
+            ).then(response => {
+                this.updateFileUploadStatus(file.id, uploadStatus.DONE)
+            }).catch(error => {
+                console.log(error);
+                // TODO: may need to return something.
+            });
+    }
+
     async getContentFiles(content, page = 1) {
-        await axios.get(API_URL+'/contents/'+content+'/content_files', 
+        await axios.get(API_URL + '/contents/' + content + '/content_files', 
             {
                 params: {
                     page: page
@@ -90,12 +131,14 @@ export class FormUpload extends Component {
             <section key="uploader-gallery" className="gallery">
                 {this.state.files.map((file, i) => (
                     <div key={"item" + file.id} className={this.state.fileClasses[(i + 1)]}>
+                        <div className="uploading-indicator">{file.upload_status}</div>
                         {(() => {
-                            if (file.type.match('image.*')) {
+                            // TODO: add uploading indicator
+                            if (file.blob.type.match('image.*')) {
                                 return (
                                     <img className="gallery__media" src={file.signed_url} alt=""/>
                                 );
-                            } else if (file.type.match('video.*')) {
+                            } else if (file.blob.type.match('video.*')) {
                                 return (
                                     <video className="gallery__media" src={file.signed_url} alt="" controls/>
                                 );
