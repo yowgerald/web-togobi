@@ -30,6 +30,7 @@ class Content(models.Model):
     is_active = models.BooleanField(default=True)
     location = models.ForeignKey(
         'Location', on_delete=models.SET_NULL, null=True)
+    creation_step = models.IntegerField(default=1)
     created_at = models.DateTimeField('date created', auto_now_add=True)
     updated_at = models.DateTimeField('date updated', auto_now=True)
 

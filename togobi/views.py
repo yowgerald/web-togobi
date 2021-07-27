@@ -49,10 +49,11 @@ def content_add(request):
         if content_form.is_valid():
             content = content_form.save(commit=False)
             content.user = request.user
+            content.creation_step = 2
             content.save()
-            return redirect('own_contents')
-                        
+            return redirect('own_content_edit', content.id)
         else:
+            # TODO: change back creation_step?
             # TODO: return with error
             print('not valid')
     else:
@@ -87,6 +88,19 @@ def content_join(request, id):
 
 # TODO: return status codes of all api call
 # APIs
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def form_content(request):
+    content_form = ContentForm(initial={})
+    id = request.GET.get('id', False)
+    if (id):
+        content = get_object_or_404(Content, id=id, user_id=request.user)
+        content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
+    content_form = content_form.as_p()
+    return Response({
+        'form': str(content_form)
+    })
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
@@ -221,7 +235,7 @@ def own_content_edit(request, id):
     if request.method == 'POST':
         if content_form.is_valid():
             content_form.save()
-        return redirect('own_contents')
+        return redirect('own_content_edit', id=id)
     else:
         return render(request, 'manage/own_content_edit.html', {
             'content_form': content_form,

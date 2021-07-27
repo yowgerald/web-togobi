@@ -1,10 +1,10 @@
 import './App.css';
 import React from 'react';
-import { FormUpload } from './components/FormUpload';
+import { ContentFormMaster } from './components/ContentFormMaster';
 
 function App() {
   return (
-    <FormUpload/>
+    <ContentFormMaster />
   );
 }
 

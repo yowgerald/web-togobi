@@ -19,5 +19,8 @@ export const uploadStatus = {
     IN_QUEUE: 'Waiting',
     IN_PROGRESS: 'Uploading',
     DONE: 'Finished', 
-
 }
+export const formMode = {
+    ADD: 0,
+    EDIT: 1,
+} 

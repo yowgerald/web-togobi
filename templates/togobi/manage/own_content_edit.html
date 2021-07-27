@@ -8,11 +8,7 @@
         <div class="columns small-12 large-6">
             <form method="post" action="{% url 'own_content_edit' content.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ content_form.as_p }}
-                <p>
-                    <div id="root" is-edit="True" content="{{ content.id }}"></div>
-                </p>
-                <button type="submit" class="button">Save Changes</button>
+                <div id="root" mode="1" content="{{ content.id }}" step="{{ content.creation_step }}"></div>
             </form>
         </div>
     </div>
