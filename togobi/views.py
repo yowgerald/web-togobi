@@ -24,7 +24,7 @@ from google.cloud import storage
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Create your views here.
 time_threshold = datetime.now() + timedelta(hours=1)
@@ -168,7 +168,7 @@ def __gen_signed_url(file):
     return url
 
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def contentfile_upload(request, id):
     # TODO: may need to be in try catch
     storage_client = storage.Client()

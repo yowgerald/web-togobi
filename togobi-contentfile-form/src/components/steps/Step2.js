@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config, uploadStatus, formMode } from '../../Constants';
+import { config, uploadStatus } from '../../Constants';
 import uuid from 'react-uuid';
 
 const API_URL = config.url.API_URL;
+const EL_CSRF =  document.querySelector("input[name='csrfmiddlewaretoken'")
+const csrftoken = EL_CSRF !== null ? EL_CSRF.value : null;
 
 export class Step2 extends Component {
     constructor(props) {
@@ -74,17 +76,16 @@ export class Step2 extends Component {
     }
 
     async uploadContentFile(file) {
-        // TODO: content should not be static!
-        var content = 77;
         var formData = new FormData();
         formData.append('file', file.blob);
         // TODO: in queue indicator problem
         this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
-        await axios.post(API_URL+ '/contents/' + content + '/content_file/upload',
+        await axios.post(API_URL+ '/contents/' + this.props.content + '/content_file/upload',
             formData,
             {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'X-CSRFToken': csrftoken
                 }
             }
             ).then(response => {
@@ -113,9 +114,7 @@ export class Step2 extends Component {
     }
 
     componentDidMount() {
-        if (this.props.mode === formMode.EDIT) {
-            this.getContentFiles(this.props.content);
-        }
+        this.getContentFiles(this.props.content);
     }
 
     render() {
