@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config, uploadStatus, formMode } from '../../Constants';
+import { config, uploadStatus, formMode, fileType } from '../../Constants';
 import uuid from 'react-uuid';
 
 const API_URL = config.url.API_URL;
@@ -25,6 +25,14 @@ export class Step2 extends Component {
         };
     }
 
+    manageFileType(blob) {
+        if(blob.type.match('image.*')) {
+            return fileType.IMAGE;
+        } else if(blob.type.match('video.*')) {
+            return fileType.VIDEO;
+        }
+    }
+
     handleChange(e) {
         if (typeof e !== 'undefined') {
             var fi = e.target;
@@ -37,7 +45,8 @@ export class Step2 extends Component {
                         id: uuid(),
                         signed_url: tmpUrl,
                         upload_status: uploadStatus.IN_QUEUE,
-                        blob: blob
+                        blob: blob,
+                        f_type: this.manageFileType(blob)
                     };
                     files.push(nfile)
                 }
@@ -54,19 +63,34 @@ export class Step2 extends Component {
         }
     }
 
-    handleRemove(id) {
-        // TODO: remove from backend/ cloud storage
-        this.setState({
-            files: this.state.files.filter(f => f.id !== id)
-        });
+    async handleRemove(id, e) {
+        e.preventDefault();
+        await axios.delete(API_URL + '/content_file/' + id +'/delete', {
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                data: {
+                    id: id
+                },
+            }).then(response => {
+                this.setState({
+                    files: this.state.files.filter(f => f.id !== id)
+                });
+            }).catch(error => {
+                console.log(error);
+                // TODO: may need to return something.
+            });
     }
 
-    updateFileUploadStatus(id, status) {
+    updateFileUploadStatus(id, status, backend_id = null) {
         this.setState((prevState) => {
             let files = [ ...prevState.files ];
             for (let file of files) {
                 if(file.id === id) {
                     file.upload_status = status;
+                    if (backend_id !== null) {
+                        file.id = backend_id;
+                    }
                     break;
                 }
             }
@@ -89,7 +113,7 @@ export class Step2 extends Component {
                 }
             }
             ).then(response => {
-                this.updateFileUploadStatus(file.id, uploadStatus.DONE)
+                this.updateFileUploadStatus(file.id, uploadStatus.DONE, response.data.result.id)
             }).catch(error => {
                 console.log(error);
                 // TODO: may need to return something.
@@ -129,17 +153,19 @@ export class Step2 extends Component {
                         <div key={"item" + file.id} className={this.state.fileClasses[(i + 1)]}>
                             <div className="uploading-indicator">{file.upload_status}</div>
                             {(() => {
-                                if (file.blob.type.match('image.*')) {
+                                if (file.f_type === fileType.IMAGE) {
                                     return (
                                         <img className="gallery__media" src={file.signed_url} alt=""/>
                                     );
-                                } else if (file.blob.type.match('video.*')) {
+                                } else if (file.f_type === fileType.VIDEO) {
                                     return (
                                         <video className="gallery__media" src={file.signed_url} alt="" controls/>
                                     );
                                 }
                             })()}
-                            <button className="hollow button tiny alert file-remove" onClick={(e) => this.handleRemove(file.id, e)}>&#x2716;</button>
+                            {file.upload_status === uploadStatus.DONE || formMode.EDIT ? 
+                                <button className="hollow button tiny alert file-remove" onClick={(e) => this.handleRemove(file.id, e)}>&#x2716;</button> 
+                            : null}
                         </div>
                     ))}
                 </section>

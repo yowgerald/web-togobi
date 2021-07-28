@@ -20,4 +20,5 @@ urlpatterns = [
     path('contents/top', views.contents_top),
     path('contents/<int:id>/content_files', views.content_file_collection),
     path('contents/<int:id>/content_file/upload', views.contentfile_upload),
+    path('content_file/<int:id>/delete', views.content_file_delete),
 ]

@@ -57,11 +57,7 @@ def content_add(request):
             # TODO: return with error
             print('not valid')
     else:
-        content_form = ContentForm(initial={})
-        context = {
-            'content_form': content_form,
-        }
-        return render(request, 'content_add.html', context)
+        return render(request, 'content_add.html', {})
 
 @login_required
 def content_join(request, id):
@@ -88,6 +84,21 @@ def content_join(request, id):
 
 # TODO: return status codes of all api call
 # APIs
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def content_file_delete(request, id):
+    if (id):
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(settings.GCP_BUCKET_NAME)
+
+        content_file = get_object_or_404(ContentFile, id = id)
+        blob = bucket.blob(content_file.source)
+        blob.delete()
+        content_file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def form_content(request):
