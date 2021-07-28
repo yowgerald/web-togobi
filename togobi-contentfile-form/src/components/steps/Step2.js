@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config, uploadStatus } from '../../Constants';
+import { config, uploadStatus, formMode } from '../../Constants';
 import uuid from 'react-uuid';
 
 const API_URL = config.url.API_URL;
@@ -114,13 +114,12 @@ export class Step2 extends Component {
     }
 
     componentDidMount() {
-        this.getContentFiles(this.props.content);
+        if (this.props.mode === formMode.EDIT) {
+            this.getContentFiles(this.props.content);
+        }
     }
 
     render() {
-        if (this.props.currentStep !== 2) {
-            return null
-        }
         return (
             <React.Fragment>
                 <label key="uploader-label" htmlFor="content-file" className="button">Upload File</label>

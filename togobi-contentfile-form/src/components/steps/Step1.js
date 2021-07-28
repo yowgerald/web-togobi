@@ -29,14 +29,10 @@ export class Step1 extends Component {
     }
 
     componentDidMount() {
-        let content = isNaN(this.props.content) ? null : this.props.content;
-        this.getFormContent(content);
+        this.getFormContent(this.props.content);
     }
 
     render() {
-        if (this.props.currentStep !== 1) {
-            return null
-        }
         return (
             <div dangerouslySetInnerHTML={{ __html: this.state.html }} />
         )

@@ -9,9 +9,9 @@ export class ContentFormMaster extends Component {
 
         let container = document.getElementById('root');
         this.state = {
-            mode: parseInt(container.getAttribute('mode')),
-            content: parseInt(container.getAttribute('content')),
-            currentStep: parseInt(container.getAttribute('step'))
+            mode: parseInt(container.getAttribute('mode') ?? formMode.ADD),
+            content: container.getAttribute('content') !== null ? parseInt(container.getAttribute('content')) : null,
+            currentStep: parseInt(container.getAttribute('step') ?? 1)
         }
     }
 
@@ -29,19 +29,22 @@ export class ContentFormMaster extends Component {
         // TODO: final saving
     }
 
-    componentDidMount() {
-        if (this.state.mode === formMode.ADD) {
-            this.setState({
-                currentStep: 1
-            });
+    manageStep() {
+        switch(this.state.currentStep) {
+            case 1:
+                return <Step1 currentStep={this.state.currentStep} mode={this.state.mode} content={this.state.content}/>;
+            case 2:
+                return <Step2 currentStep={this.state.currentStep} mode={this.state.mode} content={this.state.content}/>;
+            default:
+                return null;
         }
     }
 
     render() {
         return (
             <React.Fragment>
-                <Step1 currentStep={this.state.currentStep} mode={this.state.mode} content={this.state.content}/>
-                <Step2 currentStep={this.state.currentStep} mode={this.state.mode} content={this.state.content}/>
+                {this.manageStep()}
+
                 {this.state.currentStep > 1 ?
                     <button className='secondary button float-left' onClick={() => this.gotoPrevStep()}>Back</button>
                 : null
