@@ -5,8 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta, date
-from django.db.models import Count
-from django.db.models import TextField
+from django.db.models import Count, TextField, Q
 from django.db.models.functions import Concat
 from pathlib import Path
 from pymediainfo import MediaInfo
@@ -84,21 +83,6 @@ def content_join(request, id):
 
 # TODO: return status codes of all api call
 # APIs
-
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def content_file_delete(request, id):
-    if (id):
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(settings.GCP_BUCKET_NAME)
-
-        content_file = get_object_or_404(ContentFile, id = id)
-        blob = bucket.blob(content_file.source)
-        blob.delete()
-        content_file.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def form_content(request):
@@ -118,8 +102,10 @@ def content_collection(request):
     # TODO: search also by description, location, user
     query = request.GET.get('q')
     if query:
+        lookups= (Q(title__icontains=query) | Q(description__icontains=query) | Q(tags__icontains=query)
+            | Q(user__username__icontains=query))
         contents = Content.objects.filter(
-            title__icontains = query, target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
+            lookups, target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
     else:
         contents = Content.objects.filter(
             target_date__gt=time_threshold).annotate(total_attendees=Count('contentjoin')).order_by('-target_date')
@@ -150,6 +136,19 @@ def content_file_collection(request, id):
             'previous': prev_page,
             'result': serializer.data
         })
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def content_file_delete(request, id):
+    if (id):
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(settings.GCP_BUCKET_NAME)
+
+        content_file = get_object_or_404(ContentFile, id = id)
+        blob = bucket.blob(content_file.source)
+        blob.delete()
+        content_file.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
