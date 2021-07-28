@@ -39,7 +39,7 @@ class ContentFile(models.Model):
     content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, related_name='content_files')
     source = models.CharField(max_length=200, null=True)
     f_type = models.CharField(max_length=50, null=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
 class ContentJoin(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
