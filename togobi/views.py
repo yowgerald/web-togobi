@@ -4,9 +4,10 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta, date
+from datetime import timedelta, date
 from django.db.models import Count, TextField, Q
 from django.db.models.functions import Concat
+from django.utils import timezone
 from pathlib import Path
 from pymediainfo import MediaInfo
 
@@ -26,7 +27,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Create your views here.
-time_threshold = datetime.now() + timedelta(hours=1)
+time_threshold = timezone.now() + timedelta(hours=1)
 
 def content_list(request):
     return render(request, 'home.html', {})
@@ -76,7 +77,7 @@ def content_join(request, id):
         content_join = ContentJoin()
         content_join.user = request.user
         content_join.content = content
-        content_join.application_date = datetime.now()
+        content_join.application_date = timezone.now()
         content_join.status = 1 # status pending
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
@@ -173,7 +174,7 @@ def __gen_signed_url(file):
         client = storage.Client()
         bucket = client.get_bucket(settings.GCP_BUCKET_NAME)
         blob = bucket.get_blob(file)
-        expiration = datetime.now() + timedelta(hours=1)
+        expiration = timezone.now() + timedelta(hours=1)
         url = blob.generate_signed_url(expiration=expiration)
     return url
 
@@ -203,7 +204,7 @@ def contentfile_upload(request, id):
     upload = ResumableUpload(upload_url, chunk_size)
     stream = io.BytesIO(data)
     ext = Path(file.name).suffix
-    filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", datetime.now().strftime("%y%m%d_%H%M%S") + ext])
+    filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", timezone.now().strftime("%y%m%d_%H%M%S") + ext])
     metadata = {u'name': filename, }
     content_type = u'image/png'
     response = upload.initiate(transport, stream, metadata, content_type)
