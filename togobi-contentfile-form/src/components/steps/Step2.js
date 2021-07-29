@@ -126,8 +126,12 @@ export class Step2 extends Component {
                     page: page
                 }
             }).then(response => {
+                let files = response.data.result;
+                for (let file of files) {
+                    file.upload_status = uploadStatus.DONE
+                }
                 this.setState({
-                    files: response.data.result,
+                    files: files,
                     next_page: response.data.next,
                     prev_page: response.data.previous
                 });
@@ -163,7 +167,7 @@ export class Step2 extends Component {
                                     );
                                 }
                             })()}
-                            {file.upload_status === uploadStatus.DONE || formMode.EDIT ? 
+                            {file.upload_status === uploadStatus.DONE ? 
                                 <button className="hollow button tiny alert file-remove" onClick={(e) => this.handleRemove(file.id, e)}>&#x2716;</button> 
                             : null}
                         </div>
