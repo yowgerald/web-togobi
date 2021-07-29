@@ -74,3 +74,12 @@
   color: #1779BA;
   margin: 0 auto;
 }
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1023px) {
+  #root>.large-6.columns:nth-child(1){
+    max-width: 75%;
+    margin: 0 auto;
+    float: unset;
+    border-right: none;
+  }
+}

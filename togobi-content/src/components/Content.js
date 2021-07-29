@@ -44,41 +44,43 @@ export class Content extends Component {
     }
 
     render() {
-        return [
-            <div key="content-list" className="large-6 columns">
-                <div className="row column">
-			    	<h4 className="text-center">LATEST</h4>
-		  	    </div>
-                <div className="row">
-                    <div className="small-9 columns">
-                        <input name="q" type="text" onChange={(e) => this.handleUpdateQuery(e)}/>
-                    </div>
-                    <div className="small-3 columns">
-                      <input type="submit" className="button expanded" defaultValue="Search" onClick={() => this.handleSearch(this.state.q)}/>
-                    </div>
-                </div>
-                <a href="/content/add" className="button ffab">Add Something</a>
-                {this.state.contents.map(content => (
-                    <div className="card" key={content.id}>
-                        <ContentFile content={content.id}/>
-                        <div className="card-section">
-                            <h4>{content.title}</h4>
-                            <p>
-                            <span>{ content.description }</span>
-                            <br/>
-                            <span><i className="fi-calendar">{ content.target_date } &nbsp;&nbsp;</i></span>
-                            <br/>
-                            <span><i className="fi-torso"> By { content.username }&nbsp;&nbsp;</i></span>
-                            <br/>
-                            <span><i className="fi-comments">{ content.total_attendees } attendees</i></span>
-                            </p>
-                            <a href={"/content/"+content.id+"/join"} className="button small expanded">Join</a>
+        return (
+            <React.Fragment>
+                <div key="content-list" className="large-6 columns">
+                    <div className="row column">
+			        	<h4 className="text-center">LATEST</h4>
+		  	        </div>
+                    <div className="row">
+                        <div className="small-9 columns">
+                            <input name="q" type="text" onChange={(e) => this.handleUpdateQuery(e)}/>
                         </div>
-                    </div>  
-                ))}
-                {/* TODO: add pagination, maybe managed by every scroll? */}
-            </div>,
-            <Suggestion key="suggestion"/>
-        ]
+                        <div className="small-3 columns">
+                          <input type="submit" className="button expanded" defaultValue="Search" onClick={() => this.handleSearch(this.state.q)}/>
+                        </div>
+                    </div>
+                    <a href="/content/add" className="button ffab">Add Something</a>
+                    {this.state.contents.map(content => (
+                        <div className="card" key={content.id}>
+                            <ContentFile content={content.id}/>
+                            <div className="card-section">
+                                <h4>{content.title}</h4>
+                                <p>
+                                <span>{ content.description }</span>
+                                <br/>
+                                <span><i className="fi-calendar">{ content.target_date } &nbsp;&nbsp;</i></span>
+                                <br/>
+                                <span><i className="fi-torso"> By { content.username }&nbsp;&nbsp;</i></span>
+                                <br/>
+                                <span><i className="fi-comments">{ content.total_attendees } attendees</i></span>
+                                </p>
+                                <a href={"/content/"+content.id+"/join"} className="button small expanded">Join</a>
+                            </div>
+                        </div>  
+                    ))}
+                    {/* TODO: add pagination, maybe managed by every scroll? */}
+                </div>
+                <Suggestion key="suggestion"/>
+            </React.Fragment>
+        )
     }
 }

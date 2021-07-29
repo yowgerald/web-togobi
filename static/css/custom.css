@@ -4,6 +4,10 @@ body, .top-bar, .top-bar ul {
 	height: auto;
 }
 
+footer > .row {
+	margin-bottom: 0;
+}
+
 .top-bar {
 	-moz-box-shadow: 0 1px #E9EBEC;
 	-webkit-box-shadow: 0 1px #E9EBEC;

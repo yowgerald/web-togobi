@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content%}
-			<h3>Login</h3>
+	<h3>Login</h3>
+	<div class="row">
+		<div class="columns small-12 large-6">
 			<form method="post">
 			  {% csrf_token %}
 				{% if form.non_field_errors %}
 					<div class="warning">
 						<ul>
-	    					{{ form.non_field_errors.as_ul }}
+							{{ form.non_field_errors.as_ul }}
 						</ul>
 					</div>
 				{% endif %}
@@ -17,5 +19,7 @@
 				<input type="password" name="password" autocomplete="current-password" required="" id="id_password">
 				<button type="submit" class="button">Login</button>
 			</form>
-  			<p><a href="{% url 'password_reset' %}">Reset password</a></p>
+			<p><a href="{% url 'password_reset' %}">Reset password</a></p>
+		</div>
+	</div>
 {% endblock %}

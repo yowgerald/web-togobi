@@ -3,38 +3,38 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-			<h3>Sign Up</h3>
-			<form method="post">
-				{% csrf_token %}
-
-				{% if form.errors%}
-				<div class="warning">
-					<ul>
-						{% for key,value in form.errors.items %} 
-							{{ value|escape }}</li>
-						{% endfor %}
-					</ul>
-				</div>
-				{% endif %}
-				<p>
-			  		<label for="id_username">Username</label>
-					<input type="text" name="username" autocomplete="username" maxlength="150" required="" id="id_username">
-				</p>
-
-				<p>
-			  		<label for="id_email">Email</label>
-					<input type="email" name="email" autocomplete="email" maxlength="150" required="" id="id_email">
-				</p>
-
-				<p>
-					<label for="id_password1">Password</label>
-					<input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
-				</p>
-
-				<p>
-					<label for="id_password2">Password Confirmation</label>
-					<input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
-				</p>
-				<button type="submit" class="button">Sign Up</button>
-			</form>
+<div class="row">
+	<div class="columns small-12 large-6">
+		<h3>Sign Up</h3>
+		<form method="post">
+			{% csrf_token %}
+			{% if form.errors%}
+			<div class="warning">
+				<ul>
+					{% for key,value in form.errors.items %} 
+						{{ value|escape }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+			<p>
+				<label for="id_username">Username</label>
+				<input type="text" name="username" autocomplete="username" maxlength="150" required="" id="id_username">
+			</p>
+			<p>
+				<label for="id_email">Email</label>
+				<input type="email" name="email" autocomplete="email" maxlength="150" required="" id="id_email">
+			</p>
+			<p>
+				<label for="id_password1">Password</label>
+				<input type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
+			</p>
+			<p>
+				<label for="id_password2">Password Confirmation</label>
+				<input type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
+			</p>
+			<button type="submit" class="button">Sign Up</button>
+		</form>
+	</div>
+</div>
 {% endblock %}
