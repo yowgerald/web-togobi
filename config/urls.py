@@ -24,8 +24,4 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('payments.urls')),
     path('', include('togobi.urls')),
-
-    # api
-    path('api/v1/contents/',
-         views.content_collection, name='user_contents'),
 ]
