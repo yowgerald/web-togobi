@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+
+# Take environment variables from .env.
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j1j0=+e-$ih=u+-2fn64d(u3_$)67dkushefmx^c3dwu3m!%lw'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,11 +91,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'togobidb_dev',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '5432'
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        # https://console.cloud.google.com/sql/instances
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
+        'OPTIONS': {
+            'sslmode': 'verify-ca',
+            'sslrootcert': 'server-ca.pem',
+            'sslcert': 'client-cert.pem',
+            'sslkey': 'client-key.pem',
+        }
     }
 }
 
@@ -149,11 +160,11 @@ LOGOUT_REDIRECT_URL = 'home'
 # for existing smtp server
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND
-EMAIL_HOST = 'smtpout.secureserver.net'
-EMAIL_HOST_PASSWORD = 'Togobi720'
-EMAIL_HOST_USER = 'geraldsolon@togobi.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
@@ -169,12 +180,9 @@ CORS_ORIGIN_WHITELIST = (
 # for google cloud storage
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
     BASE_DIR, 'project-togobi-b14edac35011.json')
-GCP_BUCKET_NAME = 'bucket-togobi'
-GCP_BASE_URL = 'https://storage.cloud.google.com'
-GCP_FOLDER_UPLOAD = 'uploads'
-
-LOCAL_FOLDER_TEMP = 'media/temps'
-LOCAL_FOLDER_OUTPUT = 'media/outputs'
+GCP_BUCKET_NAME = os.getenv('GCP_BUCKET_NAME')
+GCP_BASE_URL = os.getenv('GCP_BASE_URL')
+GCP_FOLDER_UPLOAD = os.getenv('GCP_FOLDER_UPLOAD')
 
 # pass settings to templates
 SETTINGS_EXPORT = [
