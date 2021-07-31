@@ -8,11 +8,11 @@ run - `python manage.py runserver`
 
 create admin user - `winpty python manage.py createsuperuser`
 
-create an app - `python manage.py startapp <accounts>`
+create an app - `python manage.py startapp 'accounts'`
 
-create app migrations - `python manage.py makemigrations <accounts>`
+create app migrations - `python manage.py makemigrations 'accounts'`
 
-migrate app - `python manage.py migrate <accounts>`
+migrate app - `python manage.py migrate 'accounts'`
 
 clean db - `python manage.py flush`
 
@@ -161,6 +161,7 @@ location / {
 
 ### Optional for permissions
 `usermod -a -G centos nginx`
+
 `chmod 710 /var/'project'`
 
 <br/>
