@@ -21,7 +21,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = [os.getenv('APP_URL'), '0.0.0.0']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -160,14 +160,13 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    # TODO: may need to add other client domains
-    'http://localhost:3000',
-)
+
+_whitelist = os.getenv('CORS_WHITELIST').split(',')
+CORS_ORIGIN_WHITELIST = tuple(filter(None, _whitelist))
 
 # Google cloud storage
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
-    BASE_DIR, 'project-togobi-b14edac35011.json')
+    BASE_DIR, os.getenv('GCP_SERVICE_ACCT'))
 GCP_BUCKET_NAME = os.getenv('GCP_BUCKET_NAME')
 GCP_BASE_URL = os.getenv('GCP_BASE_URL')
 GCP_FOLDER_UPLOAD = os.getenv('GCP_FOLDER_UPLOAD')
