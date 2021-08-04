@@ -82,6 +82,70 @@ def content_join(request, id):
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
 
+# Manage own
+@login_required
+def own_contents(request):
+    query = request.GET.get('q')
+    if query:
+        contents = Content.objects.filter(
+            title__icontains = query, user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
+    else:
+        contents = Content.objects.filter(
+            user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(contents, 20)
+    contents = paginator.page(page)
+    return render(request, 'manage/own_contents.html', {
+        'my_contents': contents,
+    })
+
+@login_required
+def own_content_edit(request, id):
+    content = get_object_or_404(Content, id=id, user_id=request.user)
+    content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
+    if request.method == 'POST':
+        if content_form.is_valid():
+            content_form.save()
+        return redirect('own_content_edit', id=id)
+    else:
+        return render(request, 'manage/own_content_edit.html', {
+            'content_form': content_form,
+            'content': content
+        })
+
+@login_required
+def own_content_delete(request, id):
+    content = get_object_or_404(Content, id=id)
+    return render(request, 'manage/own_content_delete.html', {
+        'content': content
+    })
+
+@login_required
+def own_content_details(request, id):
+    dtabs = ['prim', 'attnds']
+    dtab = request.GET.get('dtab')
+    if dtab not in dtabs:
+        dtab = None
+    content = get_object_or_404(Content, id=id)
+    return render(request, 'manage/details/dets_tab.html', {
+        'content': content,
+        'dtab': dtab
+    })
+
+@login_required
+def notifs(request):
+    system = []
+    messages = []
+    ntabs = ['msg', 'anncmnt']
+    ntab = request.GET.get('ntab')
+    if ntab not in ntabs:
+        ntab = None
+    return render(request, 'notifs/ntf_tab.html', {
+        'system': system,
+        'messages': messages,
+        'ntab': ntab
+    })
+
 # TODO: return status codes of all api call
 # APIs
 @api_view(['GET'])
@@ -221,68 +285,3 @@ def contentfile_upload(request, id):
     return Response({
         'result': serializer.data
     })
-
-# Manage own
-@login_required
-def own_contents(request):
-    query = request.GET.get('q')
-    if query:
-        contents = Content.objects.filter(
-            title__icontains = query, user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
-    else:
-        contents = Content.objects.filter(
-            user_id = request.user.id).annotate(total_attendees=Count('contentjoin')).order_by('-created_at')
-    page = request.GET.get('page', 1)
-    paginator = Paginator(contents, 20)
-    contents = paginator.page(page)
-    return render(request, 'manage/own_contents.html', {
-        'my_contents': contents,
-    })
-
-@login_required
-def own_content_edit(request, id):
-    content = get_object_or_404(Content, id=id, user_id=request.user)
-    content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
-    if request.method == 'POST':
-        if content_form.is_valid():
-            content_form.save()
-        return redirect('own_content_edit', id=id)
-    else:
-        return render(request, 'manage/own_content_edit.html', {
-            'content_form': content_form,
-            'content': content
-        })
-
-@login_required
-def own_content_delete(request, id):
-    content = get_object_or_404(Content, id=id)
-    return render(request, 'manage/own_content_delete.html', {
-        'content': content
-    })
-
-@login_required
-def own_content_details(request, id):
-    dtabs = ['prim', 'attnds']
-    dtab = request.GET.get('dtab')
-    if dtab not in dtabs:
-        dtab = None
-    content = get_object_or_404(Content, id=id)
-    return render(request, 'manage/details/dets_tab.html', {
-        'content': content,
-        'dtab': dtab
-    })
-
-@login_required
-def notifs(request):
-    system = []
-    messages = []
-    ntabs = ['msg', 'anncmnt']
-    ntab = request.GET.get('ntab')
-    if ntab not in ntabs:
-        ntab = None
-    return render(request, 'notifs/ntf_tab.html', {
-        'system': system,
-        'messages': messages,
-        'ntab': ntab
-    })
-    
