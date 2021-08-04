@@ -170,6 +170,7 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(
 GCP_BUCKET_NAME = os.getenv('GCP_BUCKET_NAME')
 GCP_BASE_URL = os.getenv('GCP_BASE_URL')
 GCP_FOLDER_UPLOAD = os.getenv('GCP_FOLDER_UPLOAD')
+GCP_GMAP_KEY = os.getenv('GCP_GMAP_KEY')
 
 # Settings accessible to templates
 SETTINGS_EXPORT = [

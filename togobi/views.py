@@ -4,12 +4,9 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from datetime import timedelta, date
 from django.db.models import Count, TextField, Q
 from django.db.models.functions import Concat
 from django.utils import timezone
-from pathlib import Path
-from pymediainfo import MediaInfo
 
 from togobi.forms import ContentForm
 from togobi.models import Content, ContentFile, ContentJoin
@@ -17,14 +14,20 @@ from togobi.serializers import ContentSerializer, ContentFileSerializer, Content
 
 from google.auth.transport.requests import AuthorizedSession
 from google.resumable_media.requests import ResumableUpload
-import io
-import os
 from google.cloud import storage
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+
+from pathlib import Path
+from pymediainfo import MediaInfo
+from datetime import timedelta, date
+import io
+import os
+import uuid
+import googlemaps
 
 # Create your views here.
 time_threshold = timezone.now() + timedelta(hours=1)
@@ -285,3 +288,13 @@ def contentfile_upload(request, id):
     return Response({
         'result': serializer.data
     })
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
+def location_suggestions(request):
+    gmaps = googlemaps.Client(key=settings.GCP_GMAP_KEY)
+    input = request.GET.get('input')
+    session_token = uuid.uuid4().hex
+    result = gmaps.places_autocomplete(input, session_token = session_token)
+    return Response({'result' : result})
