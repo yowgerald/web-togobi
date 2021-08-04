@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { config } from '../Constants';
 
-const API_URL = config.url.API_URL;
-
 export class Top extends Component {
     
     constructor() {
@@ -14,7 +12,7 @@ export class Top extends Component {
     }
 
     async getContentsTop(query = null) {
-        await axios.get(API_URL+'/contents/top',
+        await axios.get(config.API_URL + '/contents/top',
             {
                 params: {
                     q: query

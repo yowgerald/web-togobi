@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { config, fileType } from '../Constants';
 
-const API_URL = config.url.API_URL;
-
 export class ContentFile extends Component {
     constructor(props) {
         super(props);
@@ -24,7 +22,7 @@ export class ContentFile extends Component {
 
     async getContentFiles(page = 1) {
         var content = this.props.content;
-        await axios.get(API_URL+'/contents/'+content+'/content_files', 
+        await axios.get(config.API_URL + '/contents/' + content + '/content_files', 
             {
                 params: {
                     page: page
@@ -77,25 +75,27 @@ export class ContentFile extends Component {
             ];
         });
         
-        return [
-            <section key="gallery" className={galleryClass}>
-                {files}
-            </section>,
-            <br key="gallery-load-break"/>,
-            // TODO: add loading effect for page transition
-            <div key="items-page" className="items__page">
-                {this.state.prev_page != null ?
-                    <div key="load-previous" onClick={() => this.handleLoadPrevious()}>
-                        Previous
-                    </div>
-                : null}
-                {this.state.prev_page != null && this.state.next_page ? <span>&nbsp; &bull; &nbsp;</span> : null}
-                {this.state.next_page != null ?
-                    <div key="load-next" onClick={() => this.handleLoadNext()}>
-                        Next
-                    </div>
-                : null}
-            </div>
-        ]
+        return (
+            <React.Fragment>
+                <section className={galleryClass}>
+                    {files}
+                </section>
+                <br/>
+                {/* TODO: add loading effect for page transition */}
+                <div className="items__page">
+                    {this.state.prev_page != null ?
+                        <div key="load-previous" onClick={() => this.handleLoadPrevious()}>
+                            Previous
+                        </div>
+                    : null}
+                    {this.state.prev_page != null && this.state.next_page ? <span>&nbsp; &bull; &nbsp;</span> : null}
+                    {this.state.next_page != null ?
+                        <div key="load-next" onClick={() => this.handleLoadNext()}>
+                            Next
+                        </div>
+                    : null}
+                </div>
+            </React.Fragment>
+        )
     }
 }

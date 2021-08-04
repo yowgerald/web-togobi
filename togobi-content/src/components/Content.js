@@ -4,8 +4,6 @@ import { ContentFile } from '../components/ContentFile';
 import { config } from '../Constants';
 import { Suggestion } from '../components/Suggestion';
 
-const API_URL = config.url.API_URL;
-
 export class Content extends Component {
     constructor() {
         super();
@@ -16,7 +14,7 @@ export class Content extends Component {
     }
 
     async getContents(query = null) {
-        await axios.get(API_URL+'/contents',
+        await axios.get(config.API_URL + '/contents',
             {
                 params: {
                     q: query
