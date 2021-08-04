@@ -166,6 +166,15 @@ def form_content(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
+def content_detail(request, id):
+    content = get_object_or_404(Content, id=id, user_id=request.user)
+    serializer = ContentSerializer(content)
+    return Response({
+        'result': serializer.data
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
     # TODO: search also by location
     query = request.GET.get('q')
