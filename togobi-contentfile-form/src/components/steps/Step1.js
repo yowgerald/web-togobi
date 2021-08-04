@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config } from '../../Constants';
-
-const API_URL = config.url.API_URL;
-const EL_CSRF =  document.querySelector("input[name='csrfmiddlewaretoken'")
-const csrftoken = EL_CSRF !== null ? EL_CSRF.value : null;
+import { config, csrftoken, formMode } from '../../Constants';
 
 export class Step1 extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            html: '',
             content_details: {
                 title: '',
                 description: '',
@@ -21,24 +16,8 @@ export class Step1 extends Component {
         };
     }
 
-    async getFormContent(id = null) {
-        // get Html Form from backend
-        await axios.get(API_URL + '/form/content', {
-                params: {
-                    id: id
-                }
-            }).then(response => {
-                this.setState({
-                    html: response.data.form
-                })
-            }).catch(error => {
-                console.log(error);
-                // TODO: may need to return something.
-            });
-    }
-
     async getContentDetails(id) {
-        await axios.get(API_URL + '/content/' + id, {
+        await axios.get(config.url.API_URL + '/content/' + id, {
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
@@ -52,9 +31,16 @@ export class Step1 extends Component {
             });
     }
 
+    handleStatus() {
+        var content_details = {...this.state.content_details}
+        content_details.is_active = !content_details.is_active;
+        this.setState({content_details})
+    }
+
     componentDidMount() {
-        // this.getFormContent(this.props.content);
-        this.getContentDetails(this.props.content);
+        if (this.props.mode === formMode.EDIT) {
+            this.getContentDetails(this.props.content);
+        }
     }
 
     render() {
@@ -78,7 +64,7 @@ export class Step1 extends Component {
                 </p>
                 <p>
                     <label htmlFor="id_is_active">Active:</label>
-                    <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active} onChange={() => {}}></input>
+                    <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active} onChange={() => this.handleStatus()}></input>
                 </p>
             </React.Fragment>
         )

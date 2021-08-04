@@ -151,21 +151,9 @@ def notifs(request):
 
 # TODO: return status codes of all api call
 # APIs
-@api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
-def form_content(request):
-    content_form = ContentForm(initial={})
-    id = request.GET.get('id', False)
-    if (id):
-        content = get_object_or_404(Content, id=id, user_id=request.user)
-        content_form = ContentForm(request.POST or None, instance = content, edit_check = True)
-    content_form = content_form.as_p()
-    return Response({
-        'form': str(content_form)
-    })
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticated])
 def content_detail(request, id):
     content = get_object_or_404(Content, id=id, user_id=request.user)
     serializer = ContentSerializer(content)
@@ -299,8 +287,7 @@ def contentfile_upload(request, id):
     })
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def location_suggestions(request):
     gmaps = googlemaps.Client(key=settings.GCP_GMAP_KEY)
     input = request.GET.get('input')
