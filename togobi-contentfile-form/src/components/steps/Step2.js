@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config, uploadStatus, formMode, fileType } from '../../Constants';
+import { config, uploadStatus, formMode, fileType, csrftoken } from '../../Constants';
 import uuid from 'react-uuid';
-
-const API_URL = config.url.API_URL;
-const EL_CSRF =  document.querySelector("input[name='csrfmiddlewaretoken'")
-const csrftoken = EL_CSRF !== null ? EL_CSRF.value : null;
 
 export class Step2 extends Component {
     constructor(props) {
@@ -65,7 +61,7 @@ export class Step2 extends Component {
 
     async handleRemove(id, e) {
         e.preventDefault();
-        await axios.delete(API_URL + '/content_file/' + id +'/delete', {
+        await axios.delete(config.API_URL + '/content_file/' + id +'/delete', {
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
@@ -104,7 +100,7 @@ export class Step2 extends Component {
         formData.append('file', file.blob);
         // TODO: in queue indicator problem
         this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
-        await axios.post(API_URL+ '/contents/' + this.props.content + '/content_file/upload',
+        await axios.post(config.API_URL + '/contents/' + this.props.content + '/content_file/upload',
             formData,
             {
                 headers: {
@@ -121,7 +117,7 @@ export class Step2 extends Component {
     }
 
     async getContentFiles(content, page = 1) {
-        await axios.get(API_URL + '/contents/' + content + '/content_files', {
+        await axios.get(config.API_URL + '/contents/' + content + '/content_files', {
                 params: {
                     page: page
                 }

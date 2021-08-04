@@ -17,7 +17,7 @@ export class Step1 extends Component {
     }
 
     async getContentDetails(id) {
-        await axios.get(config.url.API_URL + '/content/' + id, {
+        await axios.get(config.API_URL + '/content/' + id, {
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
