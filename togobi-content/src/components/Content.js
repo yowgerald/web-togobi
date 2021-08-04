@@ -46,7 +46,7 @@ export class Content extends Component {
     render() {
         return (
             <React.Fragment>
-                <div key="content-list" className="large-6 columns">
+                <div className="large-6 columns">
                     <div className="row column">
 			        	<h4 className="text-center">LATEST</h4>
 		  	        </div>
@@ -71,6 +71,9 @@ export class Content extends Component {
                                 <br/>
                                 <span><i className="fi-torso"> By { content.username }&nbsp;&nbsp;</i></span>
                                 <br/>
+                                <span className="label secondary">{ content.tags }</span>
+                                &nbsp;
+                                <br/>
                                 <span><i className="fi-comments">{ content.total_attendees } attendees</i></span>
                                 </p>
                                 <a href={"/content/"+content.id+"/join"} className="button small expanded">Join</a>
@@ -79,7 +82,7 @@ export class Content extends Component {
                     ))}
                     {/* TODO: add pagination, maybe managed by every scroll? */}
                 </div>
-                <Suggestion key="suggestion"/>
+                <Suggestion/>
             </React.Fragment>
         )
     }

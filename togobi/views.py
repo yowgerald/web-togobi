@@ -100,7 +100,7 @@ def form_content(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
-    # TODO: search also by description, location, user
+    # TODO: search also by location
     query = request.GET.get('q')
     if query:
         lookups= (Q(title__icontains=query) | Q(description__icontains=query) | Q(tags__icontains=query)
@@ -285,3 +285,4 @@ def notifs(request):
         'messages': messages,
         'ntab': ntab
     })
+    
