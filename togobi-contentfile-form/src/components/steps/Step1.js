@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { config, csrftoken, formMode } from '../../Constants';
+import { config, csrftoken, formMode, appendScript } from '../../Constants';
 
 export class Step1 extends Component {
     constructor (props) {
@@ -34,6 +34,11 @@ export class Step1 extends Component {
     componentDidMount() {
         if (this.props.mode === formMode.EDIT) {
             this.getContentDetails(this.props.content);
+        }
+
+        if (process.env.NODE_ENV !== 'development') {
+            appendScript("/static/gmap/map_api.js");
+            appendScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyD0N-EiHuwDqA2WslFWqEteBGwokddQ_SE&libraries=places&callback=initMap", true);
         }
     }
 

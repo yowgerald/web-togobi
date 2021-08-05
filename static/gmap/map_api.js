@@ -1,7 +1,3 @@
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0N-EiHuwDqA2WslFWqEteBGwokddQ_SE&libraries=places&callback=initMap">
-</script>
-<script>
 function initMap() {
     const input = document.getElementById("id_location");
     const options = {
@@ -11,4 +7,3 @@ function initMap() {
     };
     const autocomplete = new google.maps.places.Autocomplete(input, options);
 }
-</script>
