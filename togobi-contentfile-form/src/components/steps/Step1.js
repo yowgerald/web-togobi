@@ -31,12 +31,6 @@ export class Step1 extends Component {
             });
     }
 
-    handleStatus() {
-        var content_details = {...this.state.content_details}
-        content_details.is_active = !content_details.is_active;
-        this.setState({content_details})
-    }
-
     componentDidMount() {
         if (this.props.mode === formMode.EDIT) {
             this.getContentDetails(this.props.content);
@@ -65,6 +59,10 @@ export class Step1 extends Component {
                 <p>
                     <label htmlFor="id_is_active">Active:</label>
                     <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active || this.props.mode === formMode.ADD} onChange={() => this.handleStatus()}></input>
+                </p>
+                <p>
+                    <label htmlFor="id_location">Location:</label>
+                    <input type="text" name="location" required="" id="id_location"></input>
                 </p>
             </React.Fragment>
         )
