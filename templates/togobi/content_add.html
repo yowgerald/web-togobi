@@ -3,9 +3,6 @@
 {% block content %}
 {% load static %}
     <link href="{% static 'fileform/main.css' %}" rel="stylesheet">
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0N-EiHuwDqA2WslFWqEteBGwokddQ_SE&libraries=places&callback=initMap">
-    </script>
     <h3>Add content</h3>
     <div class="row">
         <div class="columns small-12 large-6">
@@ -19,15 +16,5 @@
         </div>
     </div>
     <script src="{% static 'fileform/main.js' %}"></script>
-    <script>
-        function initMap() {
-            const input = document.getElementById("id_location");
-            const options = {
-              componentRestrictions: { country: "ph" },
-              fields: ["address_components", "geometry", "icon", "name"],
-              strictBounds: false,
-            };
-            const autocomplete = new google.maps.places.Autocomplete(input, options);
-        }
-    </script>
+    {% include 'parts/_location_script.html' %}
 {% endblock %}
