@@ -64,7 +64,7 @@ export class Step1 extends Component {
                 </p>
                 <p>
                     <label htmlFor="id_is_active">Active:</label>
-                    <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active} onChange={() => this.handleStatus()}></input>
+                    <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active || this.props.mode === formMode.ADD} onChange={() => this.handleStatus()}></input>
                 </p>
             </React.Fragment>
         )

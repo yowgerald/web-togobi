@@ -19,11 +19,6 @@ class ContentForm(ModelForm):
         labels = {
             'is_active': 'Active'
         }
-    def __init__(self, *args, **kwargs):
-        edit_check = kwargs.pop('edit_check', False)
-        super(ContentForm, self).__init__(*args, **kwargs)
-        if not edit_check:
-            del self.fields['is_active']
 
 class ContentFileForm(ModelForm):
     def __init__(self, *args, **kwargs):
