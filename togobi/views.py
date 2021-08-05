@@ -26,8 +26,6 @@ from pymediainfo import MediaInfo
 from datetime import timedelta, date
 import io
 import os
-import uuid
-import googlemaps
 
 # Create your views here.
 time_threshold = timezone.now() + timedelta(hours=1)
@@ -285,12 +283,3 @@ def contentfile_upload(request, id):
     return Response({
         'result': serializer.data
     })
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def location_suggestions(request):
-    gmaps = googlemaps.Client(key=settings.GCP_GMAP_KEY)
-    input = request.GET.get('input')
-    session_token = uuid.uuid4().hex
-    result = gmaps.places_autocomplete(input, session_token = session_token)
-    return Response({'result' : result})
