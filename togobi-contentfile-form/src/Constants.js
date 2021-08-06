@@ -15,6 +15,7 @@ export const uploadStatus = {
     IN_QUEUE: 'Waiting',
     IN_PROGRESS: 'Uploading',
     DONE: 'Finished', 
+    REMOVING: 'Removing',
 };
 export const formMode = {
     ADD: 0,

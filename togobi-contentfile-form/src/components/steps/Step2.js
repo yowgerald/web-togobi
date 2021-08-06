@@ -10,14 +10,7 @@ export class Step2 extends Component {
             files: [],
             next_page: null,
             prev_page: null,
-            fileClasses: [
-                null,
-                'gallery__item--1',
-                'gallery__item--2',
-                'gallery__item--3',
-                'gallery__item--4',
-                'gallery__item--5'
-            ],
+            fileClasses: [],
         };
     }
 
@@ -56,23 +49,26 @@ export class Step2 extends Component {
         }
     }
 
-    async handleRemove(id, e) {
+    handleRemove(id, e) {
         e.preventDefault();
-        await axios.delete(config.API_URL + '/content_file/' + id +'/delete', {
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-                data: {
-                    id: id
-                },
-            }).then(response => {
-                this.setState({
-                    files: this.state.files.filter(f => f.id !== id)
-                });
-            }).catch(error => {
-                console.log(error);
-                // TODO: may need to return something.
+        this.updateFileUploadStatus(id, uploadStatus.REMOVING);
+        axios.delete(config.API_URL + '/content_file/' + id +'/delete', {
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                id: id
+            },
+        }).then(response => {
+            this.setState({
+                files: this.state.files.filter(f => f.id !== id)
+            }, () => {
+                this.updateFileClasses();
             });
+        }).catch(error => {
+            console.log(error);
+            // TODO: may need to return something.
+        });
     }
 
     updateFileUploadStatus(id, status, backend_id = null) {
@@ -98,6 +94,7 @@ export class Step2 extends Component {
             var formData = new FormData();
             formData.append('file', file.blob);
             this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
+            this.updateFileClasses();
             await axios.post(config.API_URL + '/contents/' + this.props.content + '/content_file/upload',
                 formData,
                 {
@@ -115,8 +112,8 @@ export class Step2 extends Component {
         }
     }
 
-    async getContentFiles(content, page = 1) {
-        await axios.get(config.API_URL + '/contents/' + content + '/content_files', {
+    getContentFiles(content, page = 1) {
+        axios.get(config.API_URL + '/contents/' + content + '/content_files', {
                 params: {
                     page: page
                 }
@@ -129,6 +126,8 @@ export class Step2 extends Component {
                     files: files,
                     next_page: response.data.next,
                     prev_page: response.data.previous
+                }, () => {
+                    this.updateFileClasses();
                 });
             }).catch(error => {
                 console.log(error);
@@ -136,12 +135,44 @@ export class Step2 extends Component {
             });
     }
 
+    updateFileClasses() {
+        let fileClasses = [...this.state.fileClasses];
+        switch (this.state.files.length) {
+            case 1:
+                fileClasses[1] = 'gallery__item--1';
+                break;
+            case 2:
+                fileClasses[1] = 'gallery__item--1';
+                fileClasses[2] = 'gallery__item--2 item__stretch';
+                break;
+            case 3:
+                fileClasses[1] = 'gallery__item--1';
+                fileClasses[2] = 'gallery__item--2 item__stretch--2';
+                fileClasses[3] = 'gallery__item--3 item__stretch--3';
+                break;
+            case 4:
+                fileClasses[1] = 'gallery__item--1';
+                fileClasses[2] = 'gallery__item--2';
+                fileClasses[3] = 'gallery__item--3';
+                fileClasses[4] = 'gallery__item--1';
+                break;
+            case 5:
+                fileClasses[1] = 'gallery__item--1';
+                fileClasses[2] = 'gallery__item--2';
+                fileClasses[3] = 'gallery__item--3';
+                fileClasses[4] = 'gallery__item--4';
+                fileClasses[5] = 'gallery__item--5';
+                break;
+        }
+        this.setState({fileClasses})
+    }
+
     componentDidMount() {
         if (this.props.mode === formMode.EDIT) {
             this.getContentFiles(this.props.content);
         }
     }
-
+    
     render() {
         return (
             <React.Fragment>
