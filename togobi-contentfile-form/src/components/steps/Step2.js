@@ -50,10 +50,7 @@ export class Step2 extends Component {
                 this.setState((prevState) => ({
                     files: prevState.files.concat(files)
                 }), () => {
-                    let que_files = this.state.files.filter(f => f.upload_status === uploadStatus.IN_QUEUE);
-                    for (let file of que_files) {
-                        this.uploadContentFile(file);
-                    }
+                    this.uploadContentFile();
                 });
             }
         }
@@ -95,25 +92,27 @@ export class Step2 extends Component {
         });
     }
 
-    async uploadContentFile(file) {
-        var formData = new FormData();
-        formData.append('file', file.blob);
-        // TODO: in queue indicator problem
-        this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
-        await axios.post(config.API_URL + '/contents/' + this.props.content + '/content_file/upload',
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'X-CSRFToken': csrftoken
+    async uploadContentFile() {
+        let que_files = this.state.files.filter(f => f.upload_status === uploadStatus.IN_QUEUE);
+        for (let file of que_files) {
+            var formData = new FormData();
+            formData.append('file', file.blob);
+            this.updateFileUploadStatus(file.id, uploadStatus.IN_PROGRESS);
+            await axios.post(config.API_URL + '/contents/' + this.props.content + '/content_file/upload',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': csrftoken
+                    }
                 }
-            }
-            ).then(response => {
-                this.updateFileUploadStatus(file.id, uploadStatus.DONE, response.data.result.id)
-            }).catch(error => {
-                console.log(error);
-                // TODO: may need to return something.
-            });
+                ).then(response => {
+                    this.updateFileUploadStatus(file.id, uploadStatus.DONE, response.data.result.id)
+                }).catch(error => {
+                    console.log(error);
+                    // TODO: may need to return something.
+                });
+        }
     }
 
     async getContentFiles(content, page = 1) {
