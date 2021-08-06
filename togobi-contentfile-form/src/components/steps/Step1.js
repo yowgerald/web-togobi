@@ -1,75 +1,79 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { config, csrftoken, formMode, appendScript } from '../../Constants';
+import { config, csrftoken, formMode, appendScript, removeScript } from '../../Constants';
 
-export class Step1 extends Component {
-    constructor (props) {
-        super(props);
-        this.state = {
-            content_details: {
-                title: '',
-                description: '',
-                tags: '',
-                target_date: null,
-                is_active: false,
-            },
-        };
+export const Step1 = ({ mode, content }) => {
+    const initialDetails = {
+        title: '',
+        description: '',
+        tags: '',
+        target_date: null,
+        is_active: false,
+    };
+
+    const [contentDetails, setContentDetails] = useState(initialDetails);
+
+    const initMapUrl = '/static/gmap/map_api.js';
+    const mapApiSource = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyD0N-EiHuwDqA2WslFWqEteBGwokddQ_SE&libraries=places&callback=initMap';
+
+    const handleStatus = e => {
+        let c_ds = {...contentDetails}
+        c_ds.is_active = !contentDetails.is_active;
+        setContentDetails(c_ds);
     }
 
-    async getContentDetails(id) {
-        await axios.get(config.API_URL + '/content/' + id, {
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-            }).then(response => {
-                this.setState({
-                    content_details: response.data.result
-                })
-            }).catch(error => {
-                console.log(error);
-                // TODO: may need to return something.
-            });
-    }
+    const getContentDetails = useCallback(
+        () => {
+            axios.get(config.API_URL + '/content/' + content, {
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                }).then(response => {
+                    setContentDetails(response.data.result)
+                }).catch(error => {
+                    console.log(error);
+                    // TODO: may need to return something.
+                });
+        }, [content])
 
-    componentDidMount() {
-        if (this.props.mode === formMode.EDIT) {
-            this.getContentDetails(this.props.content);
+    useEffect(() => {
+        if (mode === formMode.EDIT) {
+            getContentDetails();
         }
-
-        if (process.env.NODE_ENV !== 'development') {
-            appendScript("/static/gmap/map_api.js");
-            appendScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyD0N-EiHuwDqA2WslFWqEteBGwokddQ_SE&libraries=places&callback=initMap", true);
+        appendScript(initMapUrl);
+        appendScript(mapApiSource, true);
+        return () => {
+            removeScript(initMapUrl);
+            removeScript(initMapUrl);
         }
-    }
+    }, [mode, getContentDetails]);
 
-    render() {
-        return (
-            <React.Fragment>
-                <p>
-                    <label htmlFor="id_title">Title:</label>
-                    <input type="text" name="title" defaultValue={this.state.content_details.title} maxLength="200" required="" id="id_title"></input>
-                </p>
-                <p>
-                    <label htmlFor="id_description">Description:</label>
-                    <textarea name="description" defaultValue={this.state.content_details.description} cols="20" rows="5" maxLength="200" required="" id="id_description"></textarea>
-                </p>
-                <p>
-                    <label htmlFor="id_tags">Tags:</label>
-                    <input type="text" name="tags" defaultValue={this.state.content_details.tags} maxLength="200" required="" id="id_tags"></input>
-                </p>
-                <p>
-                    <label htmlFor="id_target_date">Target date:</label>
-                    <input type="datetime-local" name="target_date" defaultValue={this.state.content_details.target_date} required="" id="id_target_date"></input>
-                </p>
-                <p>
-                    <label htmlFor="id_is_active">Active:</label>
-                    <input type="checkbox" name="is_active" id="id_is_active" checked={this.state.content_details.is_active || this.props.mode === formMode.ADD} onChange={() => this.handleStatus()}></input>
-                </p>
-                <p>
-                    <label htmlFor="id_location">Location:</label>
-                    <input type="text" name="location" required="" id="id_location"></input>
-                </p>
-            </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+            <p>
+                <label htmlFor="id_title">Title:</label>
+                <input type="text" name="title" defaultValue={contentDetails.title} maxLength="200" required="" id="id_title"></input>
+            </p>
+            <p>
+                <label htmlFor="id_description">Description:</label>
+                <textarea name="description" defaultValue={contentDetails.description} cols="20" rows="5" maxLength="200" required="" id="id_description"></textarea>
+            </p>
+            <p>
+                <label htmlFor="id_tags">Tags:</label>
+                <input type="text" name="tags" defaultValue={contentDetails.tags} maxLength="200" required="" id="id_tags"></input>
+            </p>
+            <p>
+                <label htmlFor="id_target_date">Target date:</label>
+                <input type="datetime-local" name="target_date" defaultValue={contentDetails.target_date} required="" id="id_target_date"></input>
+            </p>
+            <p>
+                <label htmlFor="id_is_active">Active:</label>
+                <input type="checkbox" name="is_active" id="id_is_active" checked={contentDetails.is_active || mode === formMode.ADD} onChange={() => handleStatus()}></input>
+            </p>
+            <p>
+                <label htmlFor="id_location">Location:</label>
+                <input type="text" name="location" required="" id="id_location"></input>
+            </p>
+        </React.Fragment>
+    )
 }
