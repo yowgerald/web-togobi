@@ -85,15 +85,8 @@ DATABASES = {
         'NAME': os.getenv('DATABASE_NAME'),
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        # https://console.cloud.google.com/sql/instances
         'HOST': os.getenv('DATABASE_HOST'),
-        'PORT': os.getenv('DATABASE_PORT'),
-        'OPTIONS': {
-            'sslmode': 'verify-ca',
-            'sslrootcert': 'server-ca.pem',
-            'sslcert': 'client-cert.pem',
-            'sslkey': 'client-key.pem',
-        }
+        'PORT': os.getenv('DATABASE_PORT')
     }
 }
 
