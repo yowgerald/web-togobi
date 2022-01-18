@@ -1,10 +1,10 @@
 import './App.css';
 import React from 'react';
-import { ContentFormMaster } from './components/ContentFormMaster';
+import { ContentForm } from './components/ContentForm';
 
 function App() {
   return (
-    <ContentFormMaster />
+    <ContentForm/>
   );
 }
 
