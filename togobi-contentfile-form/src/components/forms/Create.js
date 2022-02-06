@@ -14,5 +14,16 @@ export const Create = () => {
 
     const props = { contentDetails, handleStatus };
 
-    return <BasicInputs {...props}/>
+    return (
+        <React.Fragment>
+            <div className="row">
+                <div className="columns small-12 large-6">
+                    <BasicInputs {...props}/>
+                </div>
+                <div className="columns small-12 large-6">
+                    {/* TODO: may need to add note about saving the content first. */}
+                </div>
+            </div>
+        </React.Fragment>
+    )
 }

@@ -181,9 +181,16 @@ def content_collection(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_file_collection(request, id):
-    content_files = ContentFile.objects.filter(content=id, is_active=True).order_by('f_type').reverse()
-    page = request.GET.get('page')
-    paginator = Paginator(content_files, 5)
+    content_files = ContentFile.objects.filter(content=id, is_active=True)
+
+    file_type = request.GET.get('type')
+    if file_type:
+        content_files = content_files.filter(f_type=file_type)
+
+    content_files = content_files.order_by('id')
+
+    page = request.GET.get('page') or 1
+    paginator = Paginator(content_files, 10)
     content_files = paginator.page(page)
     next_page = prev_page = None
     if content_files.has_other_pages():
@@ -266,15 +273,16 @@ def contentfile_upload(request, id):
     upload = ResumableUpload(upload_url, chunk_size)
     stream = io.BytesIO(data)
     ext = Path(file.name).suffix
-    filename = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", timezone.now().strftime("%y%m%d_%H%M%S") + ext])
-    metadata = {u'name': filename, }
-    content_type = u'image/png'
+    file_source = settings.GCP_FOLDER_UPLOAD + "/" + "_".join(["file", timezone.now().strftime("%y%m%d_%H%M%S") + ext])
+    metadata = {u'name': file_source, }
+    content_type = u'image/png' # why static ?
     response = upload.initiate(transport, stream, metadata, content_type)
     content = get_object_or_404(Content, id=id)
     while not upload.finished:
         upload.transmit_next_chunk(transport)
     content_file = ContentFile()
-    content_file.source = filename
+    content_file.name = file.name
+    content_file.source = file_source
     content_file.f_type = f_type
     content_file.content = content
     content_file.save()

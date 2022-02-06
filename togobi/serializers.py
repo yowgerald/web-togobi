@@ -8,6 +8,7 @@ class ContentFileSerializer(serializers.ModelSerializer):
         model = ContentFile
         fields = (
             'id',
+            'name',
             'source',
             'f_type',
             'signed_url'

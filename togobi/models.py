@@ -37,6 +37,7 @@ class Content(models.Model):
 
 class ContentFile(models.Model):
     content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, related_name='content_files')
+    name = models.CharField(max_length=200, null=True)
     source = models.CharField(max_length=200, null=True)
     f_type = models.CharField(max_length=50, null=True)
     is_active = models.BooleanField(default=True)

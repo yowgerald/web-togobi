@@ -39,3 +39,11 @@ export const removeScript = (scriptToremove) => {
         }    
     }
 }
+
+export const getFileType = (blob) => {
+    if(blob.type.match('image.*')) {
+        return fileType.IMAGE;
+    } else if(blob.type.match('video.*')) {
+        return fileType.VIDEO;
+    }
+}
