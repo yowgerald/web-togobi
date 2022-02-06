@@ -126,10 +126,39 @@ export const Edit = ({ content, }) => {
         }
     }
 
+    const handleRemove = (id, e) => {
+        e.preventDefault();
+        let removeFiles = [ ...files ];
+
+        removeFiles.forEach(rfile => {
+            if(rfile.id === id) {
+                rfile.upload_status = uploadStatus.REMOVING;
+                return false;
+            }
+        });
+
+        setFiles(removeFiles);
+        axios.delete(config.API_URL + '/content_file/' + id +'/delete', {
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                id: id
+            },
+        }).then(response => {
+            setFiles(files.filter(f => f.id !== id));
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     const listFiles = files.map((file) =>
         <li key={file.id}>
             {file.name.substring(0, 20) + "..."}
             <span className="badge secondary">{file.upload_status}</span>
+            {file.upload_status === uploadStatus.DONE ? 
+                <button className="hollow button tiny alert file-remove" onClick={(e) => handleRemove(file.id, e)}>&#x2716;</button> 
+            : null}
         </li>
     );
 
