@@ -7,9 +7,10 @@ import uuid from 'react-uuid';
 
 export const Edit = ({ content, }) => {
 
-    const [contentDetails, setContentDetails] = useState(initContentDetails);
-    const [files, setFiles]                   = useState([]);
-    const [isRan, setIsRan]                   = useState(false);
+    const [contentDetails, setContentDetails]             = useState(initContentDetails);
+    const [files, setFiles]                               = useState([]);
+    const [isRan, setIsRan]                               = useState(false);
+    const [disabledRemoveButton, setDisabledRemoveButton] = useState(false);
 
 
     const contentDetailsAPI                   = config.API_URL + '/content/' + content;
@@ -133,6 +134,7 @@ export const Edit = ({ content, }) => {
         removeFiles.forEach(rfile => {
             if(rfile.id === id) {
                 rfile.upload_status = uploadStatus.REMOVING;
+                setDisabledRemoveButton(true);
                 return false;
             }
         });
@@ -147,6 +149,7 @@ export const Edit = ({ content, }) => {
             },
         }).then(response => {
             setFiles(files.filter(f => f.id !== id));
+            setDisabledRemoveButton(false);
         }).catch(error => {
             console.log(error);
         });
@@ -157,7 +160,7 @@ export const Edit = ({ content, }) => {
             {file.name.substring(0, 20) + "..."}
             <span className="badge secondary">{file.upload_status}</span>
             {file.upload_status === uploadStatus.DONE ? 
-                <button className="hollow button tiny alert file-remove" onClick={(e) => handleRemove(file.id, e)}>&#x2716;</button> 
+                <button className="hollow button tiny alert file-remove" onClick={(e) => handleRemove(file.id, e)} disabled={disabledRemoveButton}>&#x2716;</button> 
             : null}
         </li>
     );
@@ -172,7 +175,8 @@ export const Edit = ({ content, }) => {
                 </div>
                 <div className="columns small-12 large-6">
                     <label key="uploader-label" htmlFor="content-file" className="button">Upload File</label>
-                    <input key="uploader" id="content-file" name="content-file" className="show-for-sr" type="file" multiple onChange={(e) => handleChange(e)}/>
+                    {/* TODO: fix the issue on multiple uploading */}
+                    <input key="uploader" id="content-file" name="content-file" className="show-for-sr" type="file" onChange={(e) => handleChange(e)}/>
 
                     <ul>{listFiles}</ul>
                 </div>
