@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Edit Attendee{% endblock %}
+{% block content %}
+{% load static %}
+    <link href="{% static 'fileform/main.css' %}" rel="stylesheet">
+    <h3>Edit Attendee</h3>
+        <form method="post" action="{% url 'own_content_attendee_edit' id=content_join.content_id attendee_id=content_join.user.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ content_join_form.as_p }}
+
+            <button type="submit" class="button">Update</button>
+        </form>
+{% endblock %}

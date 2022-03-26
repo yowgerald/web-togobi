@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from togobi.models import Content, ContentFile
+from togobi.models import Content, ContentFile, ContentJoin
 
 class ContentForm(ModelForm):
     class Meta:
@@ -32,4 +32,26 @@ class ContentFileForm(ModelForm):
         )
         widgets = {
             'source': forms.FileInput(attrs={'type': 'file'})
+        }
+
+STATUSES = (
+    ('1', 'Active',),
+    ('2', 'Pending'),
+    ('3', 'Kicked')
+)
+
+class ContentJoinForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ContentJoinForm, self).__init__(*args, **kwargs)
+        self.fields['remarks'].required = False
+
+    class Meta:
+        model = ContentJoin
+        fields = (
+            'status',
+            'remarks'
+        )
+        widgets = {
+            'status': forms.Select(attrs={'style': 'width:200px'}, choices=STATUSES),
+            'remarks': forms.Textarea(attrs={'rows':5, 'cols':20}),
         }

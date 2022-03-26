@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+{% block title %}Manage{% endblock %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'frameworks/foundation/responsive-tables.css' %}">
+<script src="{% static 'frameworks/foundation/responsive-tables.js' %}"></script>
+<h3>Attendees</h3>
+<br/>
+<table class="responsive">
+    <thead>
+        <tr>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Plan</th>
+          <th>Promo/ Discount</th>
+          <th>Status</th>
+          <th>Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for attendee in content_join %}
+            <tr>
+                <td>{{ attendee.user.last_name }}</td>
+                <td>{{ attendee.user.first_name }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><a href="{% url 'own_content_attendee_edit' id=attendee.content_id attendee_id=attendee.user.id %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+</table>
+{% endblock %}

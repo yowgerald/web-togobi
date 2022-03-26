@@ -8,7 +8,7 @@ from django.db.models import Count, TextField, Q
 from django.db.models.functions import Concat
 from django.utils import timezone
 
-from togobi.forms import ContentForm
+from togobi.forms import ContentForm, ContentJoinForm
 from togobi.models import Content, ContentFile, ContentJoin
 from togobi.serializers import ContentSerializer, ContentFileSerializer, ContentTopSerializer
 
@@ -79,7 +79,7 @@ def content_join(request, id):
         content_join.user = request.user
         content_join.content = content
         content_join.application_date = timezone.now()
-        content_join.status = 1 # status pending
+        content_join.status = 2 # status pending
         content_join.save()
         return render(request, 'content_ticket.html', {'content': content})
 
@@ -122,16 +122,25 @@ def own_content_delete(request, id):
     })
 
 @login_required
-def own_content_details(request, id):
-    dtabs = ['prim', 'attnds']
-    dtab = request.GET.get('dtab')
-    if dtab not in dtabs:
-        dtab = None
-    content = get_object_or_404(Content, id=id)
-    return render(request, 'manage/details/dets_tab.html', {
-        'content': content,
-        'dtab': dtab
+def attendees_list(request, id):
+    content_join = ContentJoin.objects.filter(content_id=id).select_related('user')
+    return render(request, 'manage/attendees/attendees.html', {
+        'content_join': content_join
     })
+
+@login_required
+def attendee_edit(request, id, attendee_id):
+    content_join = get_object_or_404(ContentJoin, content_id=id, user_id=attendee_id)
+    content_join_form = ContentJoinForm(request.POST or None, instance=content_join)
+    if request.method == 'POST':
+        if content_join_form.is_valid():
+            content_join_form.save()
+            return redirect('own_content_attendees', content_join.content_id)
+    else:
+        return render(request, 'manage/attendees/edit.html', {
+            'content_join_form': content_join_form, 
+            'content_join': content_join
+        })
 
 @login_required
 def notifs(request):

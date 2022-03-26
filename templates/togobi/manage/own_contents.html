@@ -15,7 +15,6 @@
           <th>Status</th>
           <th>Attendees</th>
           <th>Edit</th>
-          <th>View</th>
         </tr>
       </thead>
       <tbody>
@@ -29,12 +28,11 @@
             <td> stopped </td>
             {% endif %}
             {% if content.total_attendees is not None %}
-              <td>{{ content.total_attendees }}</td>
+              <td><a href="{% url 'own_content_attendees' content.id %}">{{ content.total_attendees }}</a></td>
             {% else %}
               <td>0</td>
             {% endif %}
             <td> <a href="{% url 'own_content_edit' content.id %}">Edit</a> </td>
-            <td><a href="{% url 'own_content_details' content.id %}">View</a></td>
         </tr>
         {% endfor %} 
       </tbody>
