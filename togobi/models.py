@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from togobi.constants import STATUSES
 
 # Create your models here.
 
@@ -50,6 +51,9 @@ class ContentJoin(models.Model):
     application_date = models.DateTimeField('date applied')
     accepted_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='content_author')
     accepted_date = models.DateTimeField('date accepted', null=True)
+
+    def get_status(self):
+        return STATUSES[self.status]
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
