@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'payments.apps.PaymentsConfig',
+    'chats.apps.ChatsConfig',
     'togobi.apps.TogobiConfig',
     'rest_framework',
     'corsheaders',

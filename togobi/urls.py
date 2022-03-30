@@ -13,7 +13,6 @@ urlpatterns = [
     path('manage/content/<int:id>/delete', views.own_content_delete, name='own_content_delete'),
     path('manage/content/<int:id>/attendees', views.attendees_list, name='own_content_attendees'),
     path('manage/content/<int:id>/attendees/<int:attendee_id>/edit', views.attendee_edit, name='own_content_attendee_edit'),
-    path('notifs/tab', views.notifs, name='notifs'), 
     
     path('contents', views.content_collection),
     path('contents/today', views.contents_today),

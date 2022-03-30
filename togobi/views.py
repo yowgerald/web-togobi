@@ -142,20 +142,6 @@ def attendee_edit(request, id, attendee_id):
             'content_join': content_join
         })
 
-@login_required
-def notifs(request):
-    system = []
-    messages = []
-    ntabs = ['msg', 'anncmnt']
-    ntab = request.GET.get('ntab')
-    if ntab not in ntabs:
-        ntab = None
-    return render(request, 'notifs/ntf_tab.html', {
-        'system': system,
-        'messages': messages,
-        'ntab': ntab
-    })
-
 # TODO: return status codes of all api call
 # APIs
 
