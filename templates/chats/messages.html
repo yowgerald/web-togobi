@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Chat{% endblock %}
 {% block content %}
-{% load static %}
-<!-- TODO: may need to use react in implementation -->
+    {% load static %}
+    <link href="{% static 'chats/main.css' %}" rel="stylesheet">
+    <div class="row">
+		<div id="root"></div>
+	</div>
+    <script src="{% static 'chats/main.js' %}"></script>
 {% endblock %}
