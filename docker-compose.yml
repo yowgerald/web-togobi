@@ -4,7 +4,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 1300:80
+      - 443:443
     volumes:
       - static_volume:/var/www/python_django__togobi/static
     depends_on:
@@ -13,10 +13,6 @@ services:
 
   web:
     build: .
-    # command: sh -c "python manage.py makemigrations &&
-    #             python manage.py migrate &&
-    #             echo yes | python manage.py collectstatic &&
-    #             gunicorn config.wsgi:application --bind 0.0.0.0:${APP_PORT}"
     command: sh -c "python manage.py runserver 0.0.0.0:${APP_PORT}"
     volumes:
       - .:/var/www/python_django__togobi/:rw

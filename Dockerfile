@@ -3,7 +3,6 @@ FROM python:3.8.3-alpine
 ENV PROJECT=/var/www/python_django__togobi
 # set work directory
 
-
 RUN mkdir -p $PROJECT
 RUN mkdir -p $PROJECT/static
 
@@ -21,9 +20,11 @@ RUN apk update \
     && apk del build-deps \
     && apk --no-cache add musl-dev linux-headers g++ \
     && apk add bash
-# install dependencies
-RUN pip install --upgrade pip
+
 # copy project
 COPY . $PROJECT
+
+# install dependencies
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install django-settings-export

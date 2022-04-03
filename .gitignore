@@ -4,5 +4,5 @@
 /staticfiles
 /venv
 /*.json
-/*.pem
+*.pem
 .env
