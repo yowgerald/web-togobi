@@ -19,7 +19,8 @@ RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev \
     && apk del build-deps \
     && apk --no-cache add musl-dev linux-headers g++ \
-    && apk add bash
+    && apk add bash \
+    && apk add libffi libffi-dev
 
 # copy project
 COPY . $PROJECT
