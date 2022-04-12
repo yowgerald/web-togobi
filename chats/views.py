@@ -10,12 +10,6 @@ import string
 
 @login_required
 def index(request):
-    rg = RoomGroup.objects.all()
-    rgu = RoomGroupUser.objects.all()
-    # rgu.delete()
-    # users = User.objects.all()
-    print(rg)
-    print(rgu)
     return render(request, 'chats/index.html')
 
 def create_unique_room():
