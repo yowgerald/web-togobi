@@ -1,8 +1,8 @@
 FROM python:3.8.3-alpine
 
 ENV PROJECT=/var/www/python_django__togobi
-# set work directory
 
+# set work directory
 RUN mkdir -p $PROJECT
 RUN mkdir -p $PROJECT/static
 
@@ -20,9 +20,10 @@ RUN apk update \
     && apk del build-deps \
     && apk --no-cache add musl-dev linux-headers g++ \
     && apk add bash \
-    && apk add libffi libffi-dev
-
-# copy project
+    && apk add libffi libffi-dev \
+    && apk add git
+     
+# copy projects
 COPY . $PROJECT
 
 # install dependencies
