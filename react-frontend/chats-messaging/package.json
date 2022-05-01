@@ -17,8 +17,7 @@
     "build": "node ./build-non-split.js && npm run build:clean",
     "build:clean": "cd build && cp static/js/main.js ../../../static/chats/main.js && cp static/css/main.css ../../../static/chats/main.css",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "watch": "npm-watch"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -37,11 +36,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "npm-watch": "^0.11.0"
-  },
-  "watch": {
-    "build": "src/"
   }
 }
