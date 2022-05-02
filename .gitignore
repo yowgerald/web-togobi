@@ -6,3 +6,4 @@
 /*.json
 *.pem
 .env
+.DS_Store
