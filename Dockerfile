@@ -23,8 +23,7 @@ RUN apk update \
 # install additional dependencies
 RUN apk add libmediainfo \
     && apk add bash \
-    && apk add libffi libffi-dev \
-    && apk add git
+    && apk add libffi libffi-dev
      
 # copy projects
 COPY . $PROJECT
