@@ -35,11 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'payments.apps.PaymentsConfig',
-    'chats.apps.ChatsConfig',
     'togobi.apps.TogobiConfig',
     'rest_framework',
     'corsheaders',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -173,13 +171,3 @@ SETTINGS_EXPORT = [
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-ASGI_APPLICATION = 'config.asgi.application'
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [(os.getenv('DB_REDIS_HOST'), os.getenv('DB_REDIS_PORT'))],
-        },
-    },
-}

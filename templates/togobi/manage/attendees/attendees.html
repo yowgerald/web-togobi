@@ -16,7 +16,6 @@
           <th>Promo/ Discount</th>
           <th>Status</th>
           <th>Edit</th>
-          <th>Message</th>
         </tr>
       </thead>
       <tbody>
@@ -28,7 +27,6 @@
                 <td></td>
                 <td>{{ attendee.get_status }}</td>
                 <td><a href="{% url 'own_content_attendee_edit' id=attendee.content_id attendee_id=attendee.user.id %}">Edit</a></td>
-                <td><a href="{% url 'prep_room' target_id=attendee.user.id %}">Message</a></td>
             </tr>
         {% endfor %}
       </tbody>

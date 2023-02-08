@@ -20,7 +20,6 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 {% if user.is_authenticated %}
                   <li><a href="#">Notifs</a></li>
-                  <li><a href="{% url 'messages' %}">Messages</a></li>
                   <li><a href="{% url 'own_contents' %}">Manage</a></li>
                 {% endif %}
               </ul>

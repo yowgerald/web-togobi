@@ -23,6 +23,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('payments.urls')),
-    path('chat/', include('chats.urls')),
     path('', include('togobi.urls')),
 ]
