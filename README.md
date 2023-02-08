@@ -41,3 +41,7 @@ migrate app - `python manage.py migrate 'accounts'`
 clean db - `python manage.py flush`
 
 shell - `python manage.py shell`
+
+
+## NOTE:
+service account should have storage admin access
