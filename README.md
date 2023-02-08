@@ -6,6 +6,11 @@
 `cd nginx/ssl`
 
 `mkcert "*.togobi.com"`
+<br/>
+
+### Credentials & Keys (.credentials/)
+* service_account.json
+<br/>
 
 ### Local Setup with Docker
 `export DOCKER_BUILDKIT=0`
@@ -17,6 +22,7 @@
 `docker-compose exec web bash`
 
 `python manage.py migrate`
+<br/>
 
 ## Common Django Commands
 
@@ -35,5 +41,3 @@ migrate app - `python manage.py migrate 'accounts'`
 clean db - `python manage.py flush`
 
 shell - `python manage.py shell`
-
-<br/>

@@ -7,3 +7,5 @@
 *.pem
 .env
 .DS_Store
+/.credentials/*
+!/.credentials/.gitkeep
