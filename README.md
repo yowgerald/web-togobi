@@ -37,7 +37,9 @@ Run migration
 
 `python manage.py migrate`
 
-`python manage.py seed`
+`python manage.py payments-seed`
+
+`python manage.py togobi-seed`
 
 Restart Containers (optional)
 

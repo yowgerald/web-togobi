@@ -5,8 +5,19 @@ from django.contrib.auth.models import User
 
 class Plan(models.Model):
     name = models.CharField(max_length=200)
-    discount = models.DecimalField(max_digits=12, decimal_places=4)
     price = models.DecimalField(max_digits=12, decimal_places=4)
+    is_active = models.BooleanField(default=True)
+
+class Promo(models.Model):
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=200)
+    availability_date = models.DateTimeField('availability date')
+    expiration_date = models.DateTimeField('expiry date')
+
+class UserDiscount(models.Model):
+    discount = models.DecimalField(max_digits=12, decimal_places=4),
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    promo = models.ForeignKey(Promo, on_delete=models.DO_NOTHING, null=True)
     is_active = models.BooleanField(default=True)
 
 class Bank(models.Model):

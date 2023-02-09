@@ -1,0 +1,16 @@
+{
+    "monthly": {
+        "1": {
+            "name": "free",
+            "price": "0"
+        },
+        "2": {
+            "name": "standard",
+            "price": "1000"
+        },
+        "3": {
+            "name": "premium",
+            "price": "2000"
+        }
+    }
+}

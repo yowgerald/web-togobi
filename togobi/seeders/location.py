@@ -1,9 +1,8 @@
-from faker import Faker
 from geopy.geocoders import Nominatim
 from togobi.models import Location
+from faker import Faker
 
 geolocator = Nominatim(user_agent="togobi-seed")
-
 fake = Faker()
 
 def location_seeder():
