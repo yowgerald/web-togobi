@@ -1,9 +1,6 @@
 from django.contrib.auth.models import User
 from faker import Faker
 from django.utils import timezone
-from togobi.models import Location
-from togobi.models import UserDetail
-import random
 
 fake = Faker()
 
@@ -24,12 +21,3 @@ def user_seeder(default_username = None, default_password = None):
     password = default_password if default_password is not None else 'password'
     user.set_password(password)
     user.save()
-
-    location_ids = Location.objects.values_list('id', flat=True)
-    location = Location.objects.get(pk=random.choice(location_ids))
-    user_detail = UserDetail(
-        updated_at = timezone.now(),
-        location = location,
-        user = user
-    )
-    user_detail.save()
