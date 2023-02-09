@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.utils import timezone
-from django.db.models import Count, TextField
+from django.db.models import Count, TextField, Q
 from django.db.models.functions import Concat
 
 from togobi.models import Content, ContentFile, ContentJoin
@@ -38,7 +38,7 @@ def content_detail(request, id):
 @permission_classes([IsAuthenticatedOrReadOnly])
 def content_collection(request):
     # TODO: search also by location
-    query = request.GET.get('q')
+    query = request.GET.get('q') or ""
     if query:
         lookups= (Q(title__icontains=query) | Q(description__icontains=query) | Q(tags__icontains=query)
             | Q(user__username__icontains=query))

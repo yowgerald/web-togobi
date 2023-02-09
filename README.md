@@ -61,5 +61,6 @@ clean db - `python manage.py flush`
 shell - `python manage.py shell`
 
 
-## NOTE:
-service account should have storage admin access
+## NOTES:
+* Service account should have storage admin access
+* When connecting to postgres outside docker, use the port `6543`
