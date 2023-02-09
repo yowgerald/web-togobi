@@ -37,6 +37,8 @@ Run migration
 
 `python manage.py migrate`
 
+`python manage.py seed`
+
 Restart Containers (optional)
 
 `docker-compose restart`

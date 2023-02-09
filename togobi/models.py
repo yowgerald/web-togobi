@@ -9,8 +9,13 @@ from togobi.constants import STATUSES
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=200)
-    coordinates = models.CharField(max_length=200)
+    country = models.CharField(max_length=200, null=True)
+    code = models.CharField(max_length=200, null=True)
+    state = models.CharField(max_length=200, null=True)
+    city = models.CharField(max_length=200, null=True)
+    zipcode = models.CharField(max_length=200, null=True)
+    latitude = models.CharField(max_length=200, null=True)
+    longitude = models.CharField(max_length=200, null=True)
 
 
 class UserDetail(models.Model):
