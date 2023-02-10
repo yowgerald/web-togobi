@@ -6,7 +6,7 @@ services:
     ports:
       - 443:443
     volumes:
-      - static_volume:/var/www/python_django__togobi/static
+      - static_volume:/var/www/web-togobi/static
     depends_on:
       - web
     restart: "on-failure"
@@ -15,11 +15,11 @@ services:
     build: .
     command: sh -c "python manage.py runserver 0.0.0.0:${APP_PORT}"
     volumes:
-      - .:/var/www/python_django__togobi/:rw
-      - static_volume:/var/www/python_django__togobi/static
+      - .:/var/www/web-togobi/:rw
+      - static_volume:/var/www/web-togobi/static
     env_file:
       - .env
-    image: python_django__togobi
+    image: web-togobi
     expose:
       - ${APP_PORT}
     depends_on:
