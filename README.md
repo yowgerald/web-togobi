@@ -70,3 +70,4 @@ shell - `python manage.py shell`
 ## NOTES:
 * Service account should have storage admin access
 * When connecting to postgres outside docker, use the port `6543`
+* DBeaver for database management

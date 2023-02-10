@@ -11,7 +11,6 @@ def user_detail_seeder():
     
     for user in users:
         user_detail = UserDetail.objects.filter(user=user)
-        print(user_detail is not None)
         if user_detail.exists():
             continue
 
