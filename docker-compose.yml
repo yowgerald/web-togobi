@@ -4,7 +4,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 443:443
+      - ${NGINX_SSL_PORT}:443
     volumes:
       - static_volume:/var/www/web-togobi/static
     depends_on:
@@ -12,25 +12,23 @@ services:
     restart: "on-failure"
 
   web:
-    build: .
-    command: sh -c "python manage.py runserver 0.0.0.0:${APP_PORT}"
-    volumes:
-      - .:/var/www/web-togobi/:rw
-      - static_volume:/var/www/web-togobi/static
-    env_file:
-      - .env
     image: web-togobi
+    build:
+      context: .
+      args:
+        DOCKER_BUILDKIT: 0
+    command: sh -c "python manage.py runserver 0.0.0.0:${DJANGO_APP_PORT}"
+    volumes:
+      - .:/var/www/web-togobi
     expose:
-      - ${APP_PORT}
+      - ${DJANGO_APP_PORT}
     depends_on:
       - db_postgres
     restart: "on-failure"
-    tty: true
 
   db_postgres:
     image: postgres:11-alpine
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}

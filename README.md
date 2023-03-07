@@ -13,23 +13,9 @@
 <br/>
 
 ### Local Setup with Docker
-Fixing docker issue
-
-`export DOCKER_BUILDKIT=0`
-
-`export COMPOSE_DOCKER_CLI_BUILD=0`
-
 Starting the containers
 
 `docker-compose up -d`
-
-Create database
-
-`docker-compose exec db_postgres bash`
-
-`psql postgres`
-
-`CREATE DATABASE dbtogobi;`
 
 Run migration
 
@@ -42,10 +28,6 @@ Run migration
 `python manage.py seed-payments`
 
 `python manage.py seed-togobi`
-
-Restart Containers (optional)
-
-`docker-compose restart`
 <br/>
 
 ## Common Django Commands
