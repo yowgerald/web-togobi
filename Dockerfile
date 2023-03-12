@@ -1,4 +1,4 @@
-FROM python:3.8.3-alpine
+FROM python:3.10.6-alpine
 
 ENV PROJECT=/var/www/web-togobi
 
@@ -31,4 +31,3 @@ COPY . $PROJECT
 # install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN pip install django-settings-export

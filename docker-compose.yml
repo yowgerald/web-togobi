@@ -13,13 +13,11 @@ services:
 
   web:
     image: web-togobi
-    build:
-      context: .
-      args:
-        DOCKER_BUILDKIT: 0
+    build: .
     command: sh -c "python manage.py runserver 0.0.0.0:${DJANGO_APP_PORT}"
     volumes:
       - .:/var/www/web-togobi
+      - static_volume:/var/www/web-togobi/static
     expose:
       - ${DJANGO_APP_PORT}
     depends_on:
